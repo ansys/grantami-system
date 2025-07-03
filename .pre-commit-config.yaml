@@ -1,0 +1,52 @@
+repos:
+
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.7.4
+  hooks:
+    - id: ruff
+    - id: ruff-format
+
+- repo: https://github.com/codespell-project/codespell
+  rev: v2.3.0
+  hooks:
+  - id: codespell
+    args: ["--ignore-words", "doc/styles/config/vocabularies/ANSYS/accept.txt", "--skip", "poetry.lock"]
+
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v5.0.0
+  hooks:
+  - id: check-yaml
+  - id: debug-statements
+  - id: check-merge-conflict
+  - id: trailing-whitespace
+
+- repo: https://github.com/pycqa/pydocstyle
+  rev: 6.3.0
+  hooks:
+  - id: pydocstyle
+    additional_dependencies: [tomli]
+    files: "^(src/)"
+
+- repo: https://github.com/ansys/pre-commit-hooks
+  rev: v0.4.4
+  hooks:
+    - id: add-license-headers
+      args:
+      - --start_year=2025
+      files: '(src|tests)/.*\.(py)'
+
+- repo: https://github.com/numpy/numpydoc
+  rev: v1.8.0
+  hooks:
+  - id: numpydoc-validation
+    exclude: "^(tests/)|^(.github/)|^(examples/)|^(.ipython/)|^(doc)"
+
+- repo: local
+  hooks:
+  - id: mypy-code
+    name: "mypy: checks on code"
+    entry: "python -m mypy"
+    language: system
+    types: [python]
+    require_serial: true
+    files: "^(src/)"
