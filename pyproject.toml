@@ -45,6 +45,8 @@ classifiers = [
 requires-python = ">=3.13"
 dependencies = [
     "ansys-grantami-serverapi-openapi==5.1.0.dev649",
+    "requests>=2.26,<3",
+    "ansys-openapi-common>=2.0.0,<3",
 ]
 
 [tool.uv.sources]
@@ -60,6 +62,7 @@ authenticate = "always"
 dev = [
     "pytest>=7,<9",
     "mypy>=1.9.0",
+    "types-requests>=2.26,<3",
 ]
 
 [tool.coverage.run]
@@ -130,6 +133,8 @@ select = [
 
 ignore = [
     "TD002", # Missing author in TODOs comment
+    "TD003", # Missing issue link in TODOs comment
+    "D107", # Missing docstring in __init__
 ]
 
 [tool.ruff.lint.per-file-ignores]

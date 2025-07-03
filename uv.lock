@@ -22,21 +22,29 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "ansys-grantami-serverapi-openapi" },
+    { name = "ansys-openapi-common" },
+    { name = "requests" },
 ]
 
 [package.dev-dependencies]
 dev = [
     { name = "mypy" },
     { name = "pytest" },
+    { name = "types-requests" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "ansys-grantami-serverapi-openapi", specifier = "==5.1.0.dev649", index = "https://pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/" }]
+requires-dist = [
+    { name = "ansys-grantami-serverapi-openapi", specifier = "==5.1.0.dev649", index = "https://pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/" },
+    { name = "ansys-openapi-common", specifier = ">=2.0.0,<3" },
+    { name = "requests", specifier = ">=2.26,<3" },
+]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "mypy", specifier = ">=1.9.0" },
     { name = "pytest", specifier = ">=7,<9" },
+    { name = "types-requests", specifier = ">=2.26,<3" },
 ]
 
 [[package]]
@@ -375,6 +383,18 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/fa/3e/a145e5e9ccce5546390dd9898513900cecefb192487a8b73c1ab4fc4973b/sspilib-0.3.1-cp313-cp313-win32.whl", hash = "sha256:89ccacb390b15e2e807e20b8ae7e96f4724ff1fa2f48b1ba0f7d18ccc9b0d581", size = 529262, upload-time = "2025-04-30T19:37:10.419Z" },
     { url = "https://files.pythonhosted.org/packages/96/30/243e883719120de7eb1084d4a78770ae00139297a9813220c97768f26f81/sspilib-0.3.1-cp313-cp313-win_amd64.whl", hash = "sha256:21a26264df883ff6d367af60fdeb42476c7efb1dbfc5818970ac39edec3912e2", size = 620767, upload-time = "2025-04-30T19:37:11.814Z" },
     { url = "https://files.pythonhosted.org/packages/35/dd/698e7a1701908c62bfe371c197eba258182c3f41a3fc51ae588f8d46f3a7/sspilib-0.3.1-cp313-cp313-win_arm64.whl", hash = "sha256:44b89f866e0d14c8393dbc5a49c59296dd7b83a7ca97a0f9d6bd49cc46a04498", size = 528415, upload-time = "2025-04-30T19:37:13.551Z" },
+]
+
+[[package]]
+name = "types-requests"
+version = "2.32.4.20250611"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/6d/7f/73b3a04a53b0fd2a911d4ec517940ecd6600630b559e4505cc7b68beb5a0/types_requests-2.32.4.20250611.tar.gz", hash = "sha256:741c8777ed6425830bf51e54d6abe245f79b4dcb9019f1622b773463946bf826", size = 23118, upload-time = "2025-06-11T03:11:41.272Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3d/ea/0be9258c5a4fa1ba2300111aa5a0767ee6d18eb3fd20e91616c12082284d/types_requests-2.32.4.20250611-py3-none-any.whl", hash = "sha256:ad2fe5d3b0cb3c2c902c8815a70e7fb2302c4b8c1f77bdcd738192cdb3878072", size = 20643, upload-time = "2025-06-11T03:11:40.186Z" },
 ]
 
 [[package]]

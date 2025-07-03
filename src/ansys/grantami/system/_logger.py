@@ -1,4 +1,4 @@
-# Copyright (C) 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -20,14 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Pythonic client for GRANTA MI System functions."""
+import logging
 
-import importlib.metadata as importlib_metadata
-
-from ._connection import Connection, SystemApiClient
-
-__all__ = [
-    "Connection",
-    "SystemApiClient",
-]
-__version__ = importlib_metadata.version(__name__.replace(".", "-"))
+logger = logging.getLogger("ansys.grantami.system")
+logger.addHandler(logging.NullHandler())
