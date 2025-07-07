@@ -22,6 +22,7 @@
 """Models module."""
 
 from datetime import date, datetime, timezone
+from enum import Enum
 from typing import Optional, Self
 
 from ansys.grantami.serverapi_openapi.v2026r1 import models
@@ -29,11 +30,26 @@ from ansys.grantami.serverapi_openapi.v2026r1 import models
 from ._logger import logger
 
 
+class UsageMode(Enum):
+    """
+    Usage modes for an activity.
+
+    Can be used in :meth:`ActivityLogFilter.with_usage_mode`.
+    """
+
+    VIEW = models.GsaActivityLogUsageMode.VIEW
+    EDIT = models.GsaActivityLogUsageMode.EDIT
+
+
 class ActivityLogFilter:
     """
     Filter to use in an activity log operation :meth:`~.SystemApiClient.get_activity_logs_where`.
 
     All text-based fields are case-insensitive.
+
+    Examples
+    --------
+    Lots of different examples building random queries with combinations of things.
     """
 
     def __init__(self) -> None:
@@ -108,6 +124,8 @@ class ActivityLogFilter:
         """
         Filter based on a database key used as part of the activity.
 
+        If ``database_key = None``, then the ``case_insensitive_exact_match`` argument is ignored.
+
         Parameters
         ----------
         database_key : str or None
@@ -124,7 +142,7 @@ class ActivityLogFilter:
         self._database_key_filter = models.GsaActivityLogDatabaseKeyFilter(
             database_key_to_match=database_key,
             match_type=models.GsaActivityLogMatchType.CONTAINSCASEINSENSITIVE
-            if not case_insensitive_exact_match
+            if not case_insensitive_exact_match and database_key is not None
             else models.GsaActivityLogMatchType.EXACTMATCHCASEINSENSITIVE,
         )
         return self
@@ -145,6 +163,10 @@ class ActivityLogFilter:
         -------
         ActivityLogFilter
             The current :class:`.ActivityLogFilter` object.
+
+        Notes
+        -----
+        TODO: Stuff about server timezones and inclusivity of timezones
         """
         self._date_from = datetime.combine(date_from, datetime.min.time(), tzinfo=timezone.utc)
         self._date_from_inclusive = inclusive
@@ -166,18 +188,22 @@ class ActivityLogFilter:
         -------
         ActivityLogFilter
             The current :class:`.ActivityLogFilter` object.
+
+        Notes
+        -----
+        TODO: Stuff about server timezones and inclusivity of timezones
         """
         self._date_to = datetime.combine(date_to, datetime.min.time(), tzinfo=timezone.utc)
         self._date_to_inclusive = inclusive
         return self
 
-    def with_usage_mode(self, usage_mode: str) -> Self:
+    def with_usage_mode(self, usage_mode: UsageMode) -> Self:
         """
         Filter based on the usage mode of the activity.
 
         Parameters
         ----------
-        usage_mode : str
+        usage_mode : UsageMode
             The usage mode of the activity.
 
         Returns
@@ -185,11 +211,7 @@ class ActivityLogFilter:
         ActivityLogFilter
             The current :class:`.ActivityLogFilter` object.
         """
-        self._usage_mode_filter = models.GsaActivityLogUsageModeFilter(
-            usage_mode_to_match=models.GsaActivityLogUsageMode("edit")
-            if usage_mode == "edit"
-            else models.GsaActivityLogUsageMode("view"),
-        )
+        self._usage_mode_filter = models.GsaActivityLogUsageModeFilter(usage_mode_to_match=usage_mode.value)
         return self
 
     def with_username(self, username: str, case_insensitive_exact_match: bool = False) -> Self:
@@ -264,7 +286,7 @@ class ActivityLogItem:
         The application or applications used in the activity.
     username : str
         The user who performed the activity.
-    usage_mode : str
+    usage_mode : UsageMode
         The usage mode associated with the activity.
     database_key : str, optional
         The database key used in the activity.
@@ -275,7 +297,7 @@ class ActivityLogItem:
         date: date,
         application_names: list[str],
         username: str,
-        usage_mode: str,  # TODO: Make an enum
+        usage_mode: UsageMode,
         database_key: Optional[str],
     ) -> None:
         self.date = date
@@ -318,6 +340,6 @@ class ActivityLogItem:
             date=model._date.date(),
             application_names=model.application_names,
             username=model.username,
-            usage_mode=model.usage_mode.value,
+            usage_mode=UsageMode(model.usage_mode.value),
             database_key=model.database_key if model.database_key else None,
         )

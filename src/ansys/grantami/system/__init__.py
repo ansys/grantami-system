@@ -25,9 +25,13 @@
 import importlib.metadata as importlib_metadata
 
 from ._connection import Connection, SystemApiClient
+from ._models import ActivityLogFilter, ActivityLogItem, UsageMode
 
 __all__ = [
     "Connection",
     "SystemApiClient",
+    "ActivityLogFilter",
+    "ActivityLogItem",
+    "UsageMode",
 ]
 __version__ = importlib_metadata.version(__name__.replace(".", "-"))
