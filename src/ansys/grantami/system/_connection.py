@@ -27,6 +27,8 @@ Defines the client for interacting with Granta MI.
 """
 
 from abc import ABC
+from datetime import timezone
+import functools
 from typing import Iterator, Optional
 
 from ansys.openapi.common import (
@@ -40,7 +42,7 @@ import requests
 from ansys.grantami.serverapi_openapi.v2026r1 import api, models
 
 from ._logger import logger
-from ._models import ActivityLogFilter, ActivityLogItem
+from ._models import ActivityLogFilter, ActivityLogItem, _PagedResult
 
 PROXY_PATH = "/proxy/v1.svc/mi"
 AUTH_PATH = "/Health/v2.svc"
@@ -80,6 +82,7 @@ class SystemApiClient(ApiClient, ABC):
         logger.debug(f"Service URL: {api_url}")
         super().__init__(session, api_url, configuration)
         self._instantiate_apis()
+        self._server_timezone = timezone.utc
 
     def _instantiate_apis(self) -> None:
         """
@@ -95,27 +98,39 @@ class SystemApiClient(ApiClient, ABC):
         """Printable representation of the object."""
         return f"<{self.__class__.__name__} url: {self._service_layer_url}>"
 
-    # TODO: Add paging
-    def get_all_activity_logs(self) -> Iterator[ActivityLogItem]:
+    def get_all_activity_logs(self, page_size: Optional[int] = 1000) -> Iterator[ActivityLogItem]:
         """
         Get all activity logs from the Granta MI server.
+
+        Parameters
+        ----------
+        page_size : int | None, optional
+            The page size to use when requesting activity logs. If None, then paging is disabled and the logs will be
+            returned in a single request. Defaults to 1000.
 
         Returns
         -------
         Iterator of ActivityLogItem
             An iterator containing the returned activity log.
         """
-        filter = ActivityLogFilter()
-        return self.get_activity_logs_where(filter=filter)
+        gsa_filter = ActivityLogFilter()
+        return self.get_activity_logs_where(filter_=gsa_filter, page_size=page_size)
 
-    def get_activity_logs_where(self, filter: ActivityLogFilter) -> Iterator[ActivityLogItem]:
+    def get_activity_logs_where(
+        self,
+        filter_: ActivityLogFilter,
+        page_size: Optional[int] = 1000,
+    ) -> Iterator[ActivityLogItem]:
         """
         Get activity logs from the Granta MI server that match a filter.
 
         Parameters
         ----------
-        filter : ActivityLogFilter
+        filter_ : ActivityLogFilter
             The filter to apply to the request.
+        page_size : int | None, optional
+            The page size to use when requesting activity logs. If None, then paging is disabled and the logs will be
+            returned in a single request. Defaults to 1000.
 
         Returns
         -------
@@ -124,10 +139,27 @@ class SystemApiClient(ApiClient, ABC):
         """
         logger.info("Fetching activity log entries...")
 
+        if page_size is not None:
+            logger.info(f"Paging options were specified, fetching in batches of size {page_size}...")
+
+            def get_next_page(
+                client: "SystemApiClient",
+                gsa_filter: models.GsaActivityLogEntriesFilter,
+                page: int,
+            ) -> list[ActivityLogItem]:
+                _response = client.activity_log_api.get_entries(body=gsa_filter, page_size=page_size, page=page)
+                if _response is None:
+                    raise ValueError("ActivityLogApi.get_entries must not return None")
+                return [ActivityLogItem._from_model(item) for item in _response.entries]
+
+            partial_func = functools.partial(get_next_page, self, filter_._to_model())
+            return _PagedResult(partial_func, ActivityLogItem)
+
         logger.info("No paging options were specified, fetching all results...")
-        gsa_filter = filter._to_model()
+        gsa_filter = filter_._to_model()
         response = self.activity_log_api.get_entries(body=gsa_filter)
-        assert response is not None, "'response' must not be None"
+        if response is None:
+            raise ValueError("ActivityLogApi.get_entries must not return None")
         return iter(ActivityLogItem._from_model(item) for item in response.entries)
 
 
@@ -183,9 +215,7 @@ class Connection(ApiClientFactory):
         super().__init__(auth_url, session_configuration)
         self._base_service_layer_url = servicelayer_url
         self._session_configuration.headers["X-Granta-ApplicationName"] = GRANTA_APPLICATION_NAME_HEADER
-        self._session_configuration.headers["User-Agent"] = generate_user_agent(
-            "ansys-grantami-recordlists", __version__
-        )
+        self._session_configuration.headers["User-Agent"] = generate_user_agent("ansys-grantami-system", __version__)
 
     def connect(self) -> SystemApiClient:
         """

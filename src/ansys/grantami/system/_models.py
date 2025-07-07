@@ -21,9 +21,9 @@
 # SOFTWARE.
 """Models module."""
 
-from datetime import date, datetime, timezone
+from datetime import date, datetime
 from enum import Enum
-from typing import Optional, Self
+from typing import Callable, Iterator, Optional, Self, Type, TypeVar
 
 from ansys.grantami.serverapi_openapi.v2026r1 import models
 
@@ -37,8 +37,8 @@ class UsageMode(Enum):
     Can be used in :meth:`ActivityLogFilter.with_usage_mode`.
     """
 
-    VIEW = models.GsaActivityLogUsageMode.VIEW
-    EDIT = models.GsaActivityLogUsageMode.EDIT
+    VIEW = models.GsaActivityLogUsageMode.VIEW.value
+    EDIT = models.GsaActivityLogUsageMode.EDIT.value
 
 
 class ActivityLogFilter:
@@ -163,12 +163,8 @@ class ActivityLogFilter:
         -------
         ActivityLogFilter
             The current :class:`.ActivityLogFilter` object.
-
-        Notes
-        -----
-        TODO: Stuff about server timezones and inclusivity of timezones
         """
-        self._date_from = datetime.combine(date_from, datetime.min.time(), tzinfo=timezone.utc)
+        self._date_from = datetime.combine(date_from, datetime.min.time(), tzinfo=None)
         self._date_from_inclusive = inclusive
         return self
 
@@ -188,12 +184,8 @@ class ActivityLogFilter:
         -------
         ActivityLogFilter
             The current :class:`.ActivityLogFilter` object.
-
-        Notes
-        -----
-        TODO: Stuff about server timezones and inclusivity of timezones
         """
-        self._date_to = datetime.combine(date_to, datetime.min.time(), tzinfo=timezone.utc)
+        self._date_to = datetime.combine(date_to, datetime.min.time(), tzinfo=None)
         self._date_to_inclusive = inclusive
         return self
 
@@ -211,7 +203,8 @@ class ActivityLogFilter:
         ActivityLogFilter
             The current :class:`.ActivityLogFilter` object.
         """
-        self._usage_mode_filter = models.GsaActivityLogUsageModeFilter(usage_mode_to_match=usage_mode.value)
+        mode = models.GsaActivityLogUsageMode(usage_mode.value)
+        self._usage_mode_filter = models.GsaActivityLogUsageModeFilter(usage_mode_to_match=mode)
         return self
 
     def with_username(self, username: str, case_insensitive_exact_match: bool = False) -> Self:
@@ -343,3 +336,73 @@ class ActivityLogItem:
             usage_mode=UsageMode(model.usage_mode.value),
             database_key=model.database_key if model.database_key else None,
         )
+
+
+T = TypeVar("T")
+
+
+class _PagedResult(Iterator[T]):
+    """
+    Object representing the result of a search. Generic subclass of an iterator.
+
+    The individual results are obtained by iterating over this object. The results will be
+    fetched from the API as and when they are needed.
+
+    To fetch all the results, execute ``list(PagedResult)``.
+
+    Parameters
+    ----------
+    next_func : Callable[int, [list[T]]
+        The function to be called to retrieve the next page. The function must accept the page number as a single
+        argument, and must return a list of result objects.
+    iterator_type : Type[T]
+        The type of object in the iterator returned by next_func.
+    """
+
+    def __init__(
+        self,
+        next_func: Callable[[int], list[T]],
+        iterator_type: Type[T],
+    ) -> None:
+        self._next_func = next_func
+        self._current_page: Iterator[T] = iter([])
+        self._page_index = 1
+        self._iterator_type = iterator_type
+
+    def __repr__(self) -> str:
+        """Printable representation of the object."""
+        return f"<{self.__class__.__name__}[{self._iterator_type.__name__}] page_index={self._page_index}>"
+
+    def __iter__(self) -> Self:
+        """
+        Return the iterator associated with this object.
+
+        Returns
+        -------
+        Self
+            The iterator associated with this object.
+        """
+        return self
+
+    def __next__(self) -> T:
+        """
+        Return the next result from the iterator associated with this object.
+
+        Returns
+        -------
+        T
+            The next result from the iterator associated with this object.
+
+        Raises
+        ------
+        StopIteration
+          If there are no more elements.
+        """
+        try:
+            return next(self._current_page)
+        except StopIteration:
+            next_page = self._next_func(self._page_index)
+            self._page_index += 1
+            self._current_page = iter(next_page)
+
+        return next(self._current_page)
