@@ -27,13 +27,12 @@ Defines the client for interacting with Granta MI.
 """
 
 from abc import ABC
-from typing import Iterator, Optional, cast
+from typing import Iterator, Optional
 
 from ansys.openapi.common import (
     ApiClient,
     ApiClientFactory,
     SessionConfiguration,
-    Unset_Type,
     generate_user_agent,
 )
 import requests
@@ -53,10 +52,19 @@ class SystemApiClient(ApiClient, ABC):
     """
     Communicates with Granta MI.
 
-    This is an abstract class. Each concrete subtype of this class corresponds to a specific Granta MI server version.
-
     Methods are only implemented if the underlying functionality is supported by the Granta MI server version. If the
     functionality is not available, a :class:`NotImplementedError` is raised.
+
+    This class should not be instantiated directly. New sessions are created with the :class:`.Connection` class.
+
+    Other Parameters
+    ----------------
+    session : requests.Session
+        A requests.Session object.
+    service_layer_url : str
+        The Granta MI Service Layer URL.
+    configuration : ansys.openapi.common.SessionConfiguration
+        The configuration to apply to the client.
     """
 
     def __init__(
@@ -74,7 +82,8 @@ class SystemApiClient(ApiClient, ABC):
         self._instantiate_apis()
 
     def _instantiate_apis(self) -> None:
-        """Instantiate the APIs required by this class.
+        """
+        Instantiate the APIs required by this class.
 
         The versions of the API classes are not fixed, and depend on the api module defined in the ``_api`` class
         variable. This method can be overridden if APIs do not exist for a certain Granta MI version.
@@ -86,24 +95,10 @@ class SystemApiClient(ApiClient, ABC):
         """Printable representation of the object."""
         return f"<{self.__class__.__name__} url: {self._service_layer_url}>"
 
-    def _get_mi_server_major_minor_version(self) -> tuple[int, int]:
-        """Get the Granta MI major.minor version as a 2-tuple.
-
-        Returns
-        -------
-        tuple of int
-            Granta MI version number.
-
-        """
-        server_version_response = self.schema_api.get_version()
-        server_version = server_version_response.major_minor_version
-        assert not isinstance(server_version, Unset_Type), "'server_version' must not be Unset"
-        parsed_version = tuple([int(e) for e in server_version.split(".")])
-        return cast(tuple[int, int], parsed_version)
-
     # TODO: Add paging
     def get_all_activity_logs(self) -> Iterator[ActivityLogItem]:
-        """Get all activity logs from the Granta MI server.
+        """
+        Get all activity logs from the Granta MI server.
 
         Returns
         -------
@@ -114,11 +109,12 @@ class SystemApiClient(ApiClient, ABC):
         return self.get_activity_logs_where(filter=filter)
 
     def get_activity_logs_where(self, filter: ActivityLogFilter) -> Iterator[ActivityLogItem]:
-        """Get activity logs from the Granta MI server that match a filter.
+        """
+        Get activity logs from the Granta MI server that match a filter.
 
         Parameters
         ----------
-        filter: ActivityLogFilter
+        filter : ActivityLogFilter
             The filter to apply to the request.
 
         Returns

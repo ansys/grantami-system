@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""Models module."""
 
 from datetime import date
 from typing import Optional
@@ -28,12 +29,22 @@ from ansys.grantami.serverapi_openapi.v2026r1 import models
 from ._logger import logger
 
 
+# TODO: Add filter criteria
 class ActivityLogFilter:
+    """Filter to use in an activity log operation :meth:`~.SystemApiClient.get_activity_logs_where`."""
+
     def __init__(self) -> None:
         pass
 
     def _to_model(self) -> models.GsaActivityLogEntriesFilter:
-        """Generate the DTO for use with the auto-generated client code."""
+        """
+        Generate the DTO for use with the auto-generated client code.
+
+        Returns
+        -------
+        models.GsaActivityLogEntriesFilter
+            The equivalent filter as a Granta MI Server API model.
+        """
         logger.debug("Serializing ActivityLogFilter to API model")
         model = models.GsaActivityLogEntriesFilter()
         logger.debug(model.to_str())
@@ -41,59 +52,38 @@ class ActivityLogFilter:
 
 
 class ActivityLogItem:
+    """
+    Describes an activity log item as obtained from the API.
+
+    Read-only - do not directly instantiate or modify instances of this class.
+
+    Other Parameters
+    ----------------
+    date : datetime.date
+        The date on which the activity occurred.
+    application_names : list of str
+        The application or applications used in the activity.
+    username : str
+        The user who performed the activity.
+    usage_mode : str
+        The usage mode associated with the activity.
+    database_key : str, optional
+        The database key used in the activity.
+    """
+
     def __init__(
         self,
         date: date,
         application_names: list[str],
         username: str,
-        usage_mode: str,
+        usage_mode: str,  # TODO: Make an enum
         database_key: Optional[str],
     ) -> None:
-        self._date = date
-        self._application_names = application_names
-        self._username = username
-        self._usage_mode = usage_mode
-        self._database_key = database_key
-
-    @property
-    def date(self) -> date:
-        return self._date
-
-    @date.setter
-    def date(self, value: date) -> None:
-        self._date = value
-
-    @property
-    def application_names(self) -> list[str]:
-        return self._application_names
-
-    @application_names.setter
-    def application_names(self, value: list[str]) -> None:
-        self._application_names = value
-
-    @property
-    def username(self) -> str:
-        return self._username
-
-    @username.setter
-    def username(self, value: str) -> None:
-        self._username = value
-
-    @property
-    def usage_mode(self) -> str:
-        return self._usage_mode
-
-    @usage_mode.setter
-    def usage_mode(self, value: str) -> None:
-        self._usage_mode = value
-
-    @property
-    def database_key(self) -> Optional[str]:
-        return self._database_key
-
-    @database_key.setter
-    def database_key(self, value: str) -> None:
-        self._database_key = value
+        self.date = date
+        self.application_names = application_names
+        self.username = username
+        self.usage_mode = usage_mode
+        self.database_key = database_key
 
     def __repr__(self) -> str:
         """Printable representation of the object."""
@@ -114,8 +104,13 @@ class ActivityLogItem:
 
         Parameters
         ----------
-        model:
-            DTO object to parse
+        model : models.GsaActivityLogEntry
+            DTO object to parse.
+
+        Returns
+        -------
+        ActivityLogItem
+            The instantiated object.
         """
         logger.debug("Deserializing ActivityLogItem from API response")
         logger.debug(model.to_str())
