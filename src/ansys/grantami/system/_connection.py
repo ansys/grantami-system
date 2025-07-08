@@ -112,6 +112,13 @@ class SystemApiClient(ApiClient, ABC):
         -------
         Iterator of ActivityLogItem
             An iterator containing the returned activity log.
+
+        Warnings
+        --------
+        Activity logs are updated on the Granta MI server at midnight server time. If a paged request is made while the
+        activity logs are being updated, duplicate results may be retrieved from the server.
+
+        Avoid making paged requests while the server is updating the activity logs.
         """
         gsa_filter = ActivityLogFilter()
         return self.get_activity_logs_where(filter_=gsa_filter, page_size=page_size)
@@ -136,6 +143,13 @@ class SystemApiClient(ApiClient, ABC):
         -------
         Iterator of ActivityLogItem
             An iterator containing the returned activity log.
+
+        Warnings
+        --------
+        Activity logs are updated on the Granta MI server at midnight server time. If a paged request is made while the
+        activity logs are being updated, duplicate results may be retrieved from the server.
+
+        Avoid making paged requests while the server is updating the activity logs.
         """
         logger.info("Fetching activity log entries...")
 

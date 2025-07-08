@@ -42,14 +42,62 @@ class UsageMode(Enum):
 
 
 class ActivityLogFilter:
-    """
-    Filter to use in an activity log operation :meth:`~.SystemApiClient.get_activity_logs_where`.
+    r"""
+    Builder class to create an activity log filter for use with :meth:`~.SystemApiClient.get_activity_logs_where`.
 
     All text-based fields are case-insensitive.
 
     Examples
     --------
-    Lots of different examples building random queries with combinations of things.
+    Activity logs for this library
+    >>> pygranta_system_filter = ActivityLogFilter().with_application_name("PyGranta System")
+    >>> client.get_activity_logs_where(pygranta_system_filter)
+
+    Activity logs relating to the MI_Training database
+    >>> mi_training_filter = ActivityLogFilter().with_database_key("MI_Training", case_insensitive_exact_match=True)
+    >>> client.get_activity_logs_where(mi_training_filter)
+
+    Activity logs for this month so far
+    >>> first_of_this_month = datetime.date.today().replace(day=1)
+    >>> this_month_filter = ActivityLogFilter().with_date_from(first_of_this_month, inclusive=True)
+    >>> client.get_activity_logs_where(this_month_filter)
+
+    Activity logs for last month
+    >>> first_of_this_month = datetime.date.today().replace(day=1)
+    >>> last_of_last_month = first_of_this_month - datetime.timedelta(days=1)
+    >>> first_of_last_month = last_of_last_month.replace(day=1)
+    >>> this_month_filter = (
+    ...     ActivityLogFilter()
+    ...     .with_date_from(first_of_last_month, inclusive=True)
+    ...     .with_date_to(last_of_last_month, inclusive=True)
+    ... )
+    >>> client.get_activity_logs_where(this_month_filter)
+
+    Activity logs for a domain user
+    >>> domain_user_filter = ActivityLogFilter().with_username("DOMAIN\\user", case_insensitive_exact_match=True)
+    >>> client.get_activity_logs_where(domain_user_filter)
+
+    Activity logs for a local user
+    >>> local_user_filter = ActivityLogFilter().with_username("local_user", case_insensitive_exact_match=True)
+    >>> client.get_activity_logs_where(local_user_filter)
+
+    Activity logs for all 'view' activities
+    >>> view_filter = ActivityLogFilter().with_usage_mode(UsageMode.VIEW)
+    >>> view_filter.get_activity_logs_where(local_user_filter)
+
+    Activity logs for edit operations using MI Training database using MI Scripting Toolkit, made last month
+    >>> first_of_this_month = datetime.date.today().replace(day=1)
+    >>> last_of_last_month = first_of_this_month - datetime.timedelta(days=1)
+    >>> first_of_last_month = last_of_last_month.replace(day=1)
+    >>> combination_filter = (
+    ...     ActivityLogFilter()
+    ...     .with_application_name("Scripting Toolkit")
+    ...     .with_database_key("MI_Training")
+    ...     .with_usage_mode(UsageMode.EDIT)
+    ...     .with_date_from(first_of_last_month, inclusive=True)
+    ...     .with_date_to(last_of_last_month, inclusive=True)
+    ... )
+    >>> view_filter.get_activity_logs_where(combination_filter)
     """
 
     def __init__(self) -> None:
