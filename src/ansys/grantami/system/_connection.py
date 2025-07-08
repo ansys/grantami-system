@@ -183,7 +183,7 @@ class Connection(ApiClientFactory):
 
     This is a subclass of the :class:`ansys.openapi.common.ApiClientFactory` class. All methods in
     this class are documented as returning :class:`~ansys.openapi.common.ApiClientFactory` class
-    instances of the :class:`ansys.grantami.recordlists.Connection` class instead.
+    instances of the :class:`ansys.grantami.system.Connection` class instead.
 
     Parameters
     ----------

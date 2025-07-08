@@ -10,7 +10,7 @@ repos:
   rev: v2.3.0
   hooks:
   - id: codespell
-    args: ["--ignore-words", "doc/styles/config/vocabularies/ANSYS/accept.txt", "--skip", "poetry.lock"]
+    args: ["--ignore-words", "doc/styles/config/vocabularies/ANSYS/accept.txt", "--skip", "uv.lock"]
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v5.0.0

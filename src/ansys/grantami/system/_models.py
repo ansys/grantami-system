@@ -30,7 +30,7 @@ from ansys.grantami.serverapi_openapi.v2026r1 import models
 from ._logger import logger
 
 
-class UsageMode(Enum):
+class ActivityUsageMode(Enum):
     """
     Usage modes for an activity.
 
@@ -49,43 +49,19 @@ class ActivityLogFilter:
 
     Examples
     --------
-    Activity logs for this library
+    >>> # Activity logs for this library
     >>> pygranta_system_filter = ActivityLogFilter().with_application_name("PyGranta System")
     >>> client.get_activity_logs_where(pygranta_system_filter)
 
-    Activity logs relating to the MI_Training database
+    >>> # Activity logs relating to the MI_Training database
     >>> mi_training_filter = ActivityLogFilter().with_database_key("MI_Training", case_insensitive_exact_match=True)
     >>> client.get_activity_logs_where(mi_training_filter)
 
-    Activity logs for this month so far
-    >>> first_of_this_month = datetime.date.today().replace(day=1)
-    >>> this_month_filter = ActivityLogFilter().with_date_from(first_of_this_month, inclusive=True)
-    >>> client.get_activity_logs_where(this_month_filter)
-
-    Activity logs for last month
-    >>> first_of_this_month = datetime.date.today().replace(day=1)
-    >>> last_of_last_month = first_of_this_month - datetime.timedelta(days=1)
-    >>> first_of_last_month = last_of_last_month.replace(day=1)
-    >>> this_month_filter = (
-    ...     ActivityLogFilter()
-    ...     .with_date_from(first_of_last_month, inclusive=True)
-    ...     .with_date_to(last_of_last_month, inclusive=True)
-    ... )
-    >>> client.get_activity_logs_where(this_month_filter)
-
-    Activity logs for a domain user
+    >>> # Activity logs for a domain user
     >>> domain_user_filter = ActivityLogFilter().with_username("DOMAIN\\user", case_insensitive_exact_match=True)
     >>> client.get_activity_logs_where(domain_user_filter)
 
-    Activity logs for a local user
-    >>> local_user_filter = ActivityLogFilter().with_username("local_user", case_insensitive_exact_match=True)
-    >>> client.get_activity_logs_where(local_user_filter)
-
-    Activity logs for all 'view' activities
-    >>> view_filter = ActivityLogFilter().with_usage_mode(UsageMode.VIEW)
-    >>> view_filter.get_activity_logs_where(local_user_filter)
-
-    Activity logs for edit operations using MI Training database using MI Scripting Toolkit, made last month
+    >>> # Activity logs for edit operations using MI Training database using MI Scripting Toolkit, made last month
     >>> first_of_this_month = datetime.date.today().replace(day=1)
     >>> last_of_last_month = first_of_this_month - datetime.timedelta(days=1)
     >>> first_of_last_month = last_of_last_month.replace(day=1)
@@ -93,7 +69,7 @@ class ActivityLogFilter:
     ...     ActivityLogFilter()
     ...     .with_application_name("Scripting Toolkit")
     ...     .with_database_key("MI_Training")
-    ...     .with_usage_mode(UsageMode.EDIT)
+    ...     .with_usage_mode(ActivityUsageMode.EDIT)
     ...     .with_date_from(first_of_last_month, inclusive=True)
     ...     .with_date_to(last_of_last_month, inclusive=True)
     ... )
@@ -237,13 +213,13 @@ class ActivityLogFilter:
         self._date_to_inclusive = inclusive
         return self
 
-    def with_usage_mode(self, usage_mode: UsageMode) -> Self:
+    def with_usage_mode(self, usage_mode: ActivityUsageMode) -> Self:
         """
         Filter based on the usage mode of the activity.
 
         Parameters
         ----------
-        usage_mode : UsageMode
+        usage_mode : ActivityUsageMode
             The usage mode of the activity.
 
         Returns
@@ -327,7 +303,7 @@ class ActivityLogItem:
         The application or applications used in the activity.
     username : str
         The user who performed the activity.
-    usage_mode : UsageMode
+    usage_mode : ActivityUsageMode
         The usage mode associated with the activity.
     database_key : str, optional
         The database key used in the activity.
@@ -338,7 +314,7 @@ class ActivityLogItem:
         date: date,
         application_names: list[str],
         username: str,
-        usage_mode: UsageMode,
+        usage_mode: ActivityUsageMode,
         database_key: Optional[str],
     ) -> None:
         self.date = date
@@ -381,7 +357,7 @@ class ActivityLogItem:
             date=model._date.date(),
             application_names=model.application_names,
             username=model.username,
-            usage_mode=UsageMode(model.usage_mode.value),
+            usage_mode=ActivityUsageMode(model.usage_mode.value),
             database_key=model.database_key if model.database_key else None,
         )
 

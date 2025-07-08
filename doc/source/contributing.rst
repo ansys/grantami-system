@@ -153,7 +153,7 @@ If you have general questions about the PyAnsys ecosystem, email `pyansys.core@a
 If your question is specific to PyGranta System, ask your question in an issue as described in
 the previous paragraph.
 
-.. _Poetry: https://docs.astral.sh/uv/
+.. _uv: https://docs.astral.sh/uv/
 .. _pre-commit: https://pre-commit.com/
 .. _tox: https://tox.wiki/
 .. _Sphinx: https://www.sphinx-doc.org/en/master/
