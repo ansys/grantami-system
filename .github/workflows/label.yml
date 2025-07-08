@@ -1,0 +1,69 @@
+name: Labeler
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited, labeled]
+  push:
+    branches: [ main ]
+    paths:
+      - '../labels.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  label-syncer:
+    name: Syncer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+      - uses: micnncim/action-label-syncer@3abd5ab72fda571e69fffd97bd4e0033dd5f495c  # v1.3.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  labeler:
+    name: Set labels
+    needs: [label-syncer]
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+
+    - name: Label based on changed files and branch name
+      uses: actions/labeler@8558fd74291d67161a8a78ce36a881fa63b766a9  #v5.0.0
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+  commenter:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Suggest to add labels
+      uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043  #v4.0.0
+      # Execute only when no labels have been applied to the pull request
+      if: toJSON(github.event.pull_request.labels.*.name) == '{}'
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          Please add one of the following labels to add this contribution to the Release Notes :point_down:
+          - [bug](https://github.com/ansys/grantami-recordlists/pulls?q=label%3Abug+)
+          - [documentation](https://github.com/ansys/grantami-recordlists/pulls?q=label%3Adocumentation+)
+          - [enhancement](https://github.com/ansys/grantami-recordlists/pulls?q=label%3Aenhancement+)
+          - [maintenance](https://github.com/ansys/grantami-recordlists/pulls?q=label%3Amaintenance+)
+
+  changelog-fragment:
+      name: "Create changelog fragment"
+      needs: [labeler]
+      permissions:
+        contents: write
+        pull-requests: write
+      runs-on: ubuntu-latest
+      if: ${{ !startsWith( github.event.pull_request.head.ref, 'dependabot/') && !(startsWith(github.event.pull_request.head.ref, 'pre-commit-ci-update-config')) }}
+      steps:
+      - uses: ansys/actions/doc-changelog@8d3e4946f36c2a7d447b92e34b1022a5c9dc77a7  # v10.0.12
+        with:
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
+          bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
