@@ -297,7 +297,7 @@ class ActivityLogItem:
 
     Other Parameters
     ----------------
-    date : datetime.date
+    activity_date : datetime.date
         The date on which the activity occurred.
     application_names : list of str
         The application or applications used in the activity.
@@ -311,13 +311,13 @@ class ActivityLogItem:
 
     def __init__(
         self,
-        date: date,
+        activity_date: date,
         application_names: list[str],
         username: str,
         usage_mode: ActivityUsageMode,
         database_key: Optional[str],
     ) -> None:
-        self.date = date
+        self.activity_date = activity_date
         self.application_names = application_names
         self.username = username
         self.usage_mode = usage_mode
@@ -327,8 +327,8 @@ class ActivityLogItem:
         """Printable representation of the object."""
         database_key = f'"{self.database_key}"' if self.database_key else "None"
         repr = (
-            f'"<{self.__class__.__name__} date={self.date}, username="{self.username}", database_key={database_key}, '
-            f'usage_mode="{self.usage_mode}">"'
+            f'"<{self.__class__.__name__} activity_date={self.activity_date}, username="{self.username}", '
+            f'database_key={database_key}, usage_mode="{self.usage_mode}">"'
         )
         return repr
 
@@ -354,7 +354,7 @@ class ActivityLogItem:
         logger.debug(model.to_str())
 
         return cls(
-            date=model._date.date(),
+            activity_date=model._date.date(),
             application_names=model.application_names,
             username=model.username,
             usage_mode=ActivityUsageMode(model.usage_mode.value),
