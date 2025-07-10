@@ -6,3 +6,5 @@ jupytext
 (?i)ansys
 THIRDPARTY
 autologon
+System
+uv
