@@ -26,5 +26,5 @@ pytestmark = pytest.mark.integration(mi_versions=[(26, 1)])
 
 
 def test_get_activity_log(connection):
-    activity_log = connection.get_all_activity_logs()
+    activity_log = connection.get_all_activity_logs(page_size=None)
     assert activity_log

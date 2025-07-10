@@ -65,6 +65,7 @@ env:
   PIP_INDEX_URL: "https://${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/"
   UV_INDEX_PYANSYS_PYPI_USERNAME: "PAT"
   UV_INDEX_PYANSYS_PYPI_PASSWORD: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
+  LIBRARY_NAMESPACE: 'ansys.grantami.system'
 
 jobs:
 
@@ -176,6 +177,8 @@ jobs:
           check-links: false
           dependencies: "pandoc"
           sphinxopts: "-n -W --keep-going"
+          group-dependencies-name: 'doc'
+          optional-dependencies-name: ''
 
   check-workflow-runs:
     if: ${{ !cancelled() }}
