@@ -29,7 +29,7 @@ from .common import sl_url, sysadmin_password, sysadmin_username
 pytestmark = pytest.mark.integration(mi_versions=[(25, 2), (25, 1), (24, 2), (24, 1)])
 
 
-@pytest.mark.xfail("Version check not working for system admin user")
+@pytest.mark.xfail(reason="version check not working for system admin user")
 def test_connection_raises_exception(mi_version):
     current_version = ".".join(str(e) for e in mi_version)
     with pytest.raises(
