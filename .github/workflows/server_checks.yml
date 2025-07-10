@@ -44,6 +44,8 @@ on:
       # Test server URLs
       TEST_SERVER_DEV_URL:
         required: true
+      TEST_SERVER_25R2_URL:
+        required: true
 
       # Test server credentials
       TEST_SERVER_ADMIN_USER:
@@ -120,6 +122,8 @@ jobs:
         server:
           - url: "TEST_SERVER_DEV_URL"
             version: "26.1"
+          - url: "TEST_SERVER_25R2_URL"
+            version: "25.2"
     concurrency:
       group: ${{ matrix.server.url }}
       cancel-in-progress: false

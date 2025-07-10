@@ -34,6 +34,7 @@ from typing import Iterator, Optional
 from ansys.openapi.common import (
     ApiClient,
     ApiClientFactory,
+    ApiException,
     SessionConfiguration,
     generate_user_agent,
 )
@@ -48,6 +49,34 @@ PROXY_PATH = "/proxy/v1.svc/mi"
 AUTH_PATH = "/Health/v2.svc"
 API_DEFINITION_PATH = "/swagger/v1/swagger.json"
 GRANTA_APPLICATION_NAME_HEADER = "PyGranta System"
+
+MINIMUM_GRANTA_MI_VERSION = (26, 1)
+
+
+def _get_mi_server_version(client: ApiClient) -> tuple[int, ...]:
+    """
+    Get the Granta MI version as a tuple.
+
+    This method makes direct use of the underlying ``serverapi-openapi`` package.
+    The API methods in this package may change over time, and so this method is expected
+    to grow to support multiple versions of the ``serverapi-openapi`` package.
+
+    Parameters
+    ----------
+    client : :class:`~.RecordListApiClient`
+        Client object.
+
+    Returns
+    -------
+    tuple of int
+        Granta MI version number.
+    """
+    schema_api = api.SchemaApi(client)
+    server_version_response = schema_api.get_version()
+    assert server_version_response.version
+    server_version_elements = server_version_response.version.split(".")
+    server_version = tuple([int(e) for e in server_version_elements])
+    return server_version
 
 
 class SystemApiClient(ApiClient, ABC):
@@ -251,4 +280,69 @@ class Connection(ApiClientFactory):
             configuration=self._session_configuration,
         )
         client.setup_client(models)
+        self._test_connection(client)
         return client
+
+    @staticmethod
+    def _test_connection(client: SystemApiClient) -> None:
+        """
+        Check if the created client can be used to perform a request.
+
+        This method tests both that the API definition can be accessed and that the Granta MI
+        version is compatible with this package.
+
+        The first checks ensures that the Server API exists and is functional. The second check
+        ensures that the Granta MI server version is compatible with this version of the package.
+
+        A failure at any point raises a ``ConnectionError``.
+
+        Parameters
+        ----------
+        client : :class:`~.JobQueueApiClient`
+            Client object to test.
+
+        Raises
+        ------
+        ConnectionError
+            Error raised if the connection test fails.
+        """
+        try:
+            client.call_api(resource_path=API_DEFINITION_PATH, method="GET")
+        except ApiException as e:
+            if e.status_code == 404:
+                raise ConnectionError(
+                    "Cannot find the Server API definition in the Granta MI Service Layer. Ensure "
+                    "that a compatible version of Granta MI is available and try again."
+                ) from e
+            else:
+                raise ConnectionError(
+                    "An unexpected error occurred when trying to connect to the Server API in the Granta "
+                    " MI Service Layer. Check the Service Layer logs for more information and try "
+                    "again."
+                ) from e
+        except requests.exceptions.RetryError as e:
+            raise ConnectionError(
+                "An unexpected error occurred when trying to connect to the Granta MI Server API. Check "
+                "that SSL certificates have been configured for communications between the Granta MI "
+                "Server and client Granta MI applications."
+            ) from e
+
+        try:
+            server_version = _get_mi_server_version(client)
+        except ApiException as e:
+            raise ConnectionError(
+                "Cannot check the Granta MI server version. Ensure that the Granta MI server version "
+                f"is at least {'.'.join([str(e) for e in MINIMUM_GRANTA_MI_VERSION])}."
+            ) from e
+
+        # Once there are multiple versions of this package targeting different Granta MI server
+        # versions, the error message should direct users towards the PyGranta metapackage for
+        # earlier versions. This is not necessary now though, because there is no support for
+        # versions earlier than 2026 R1.
+
+        if server_version < MINIMUM_GRANTA_MI_VERSION:
+            raise ConnectionError(
+                f"This package requires a more recent Granta MI version. Detected Granta MI server "
+                f"version is {'.'.join([str(e) for e in server_version])}, but this package "
+                f"requires at least {'.'.join([str(e) for e in MINIMUM_GRANTA_MI_VERSION])}."
+            )
