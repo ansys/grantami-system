@@ -154,8 +154,8 @@ jobs:
           --cov-report=html:.cov/html
         env:
           TEST_SL_URL: ${{ secrets[matrix.server.url] }}
-          TEST_ADMIN_USER: ${{secrets.TEST_SERVER_SYSADMIN_USER}}
-          TEST_ADMIN_PASS: ${{secrets.TEST_SERVER_SYSADMIN_PASS}}
+          TEST_SYSADMIN_USER: ${{secrets.TEST_SERVER_SYSADMIN_USER}}
+          TEST_SYSADMIN_PASS: ${{secrets.TEST_SERVER_SYSADMIN_PASS}}
 
 #      - name: "Upload coverage to Codecov"
 #        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24  # v5.4.3
