@@ -330,6 +330,10 @@ class Connection(ApiClientFactory):
         try:
             server_version = _get_mi_server_version(client)
         except ApiException as e:
+            # Currently the server version check returns a 403 for a System Admin-only user
+            # Suppress this spurious failure by returning early
+            if e.status_code == 403:
+                return
             raise ConnectionError(
                 "Cannot check the Granta MI server version. Ensure that the Granta MI server version "
                 f"is at least {'.'.join([str(e) for e in MINIMUM_GRANTA_MI_VERSION])}."
