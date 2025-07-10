@@ -24,15 +24,15 @@ import pytest
 
 from .common import (
     _get_connection,
-    admin_password,
-    admin_username,
     sl_url,
+    sysadmin_password,
+    sysadmin_username,
 )
 
 
 @pytest.fixture
 def connection():
-    return _get_connection(sl_url, admin_username, admin_password)
+    return _get_connection(sl_url, sysadmin_username, sysadmin_password)
 
 
 def pytest_addoption(parser):

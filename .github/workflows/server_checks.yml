@@ -48,9 +48,9 @@ on:
         required: true
 
       # Test server credentials
-      TEST_SERVER_ADMIN_USER:
+      TEST_SERVER_SYSADMIN_USER:
         required: true
-      TEST_SERVER_ADMIN_PASS:
+      TEST_SERVER_SYSADMIN_PASS:
         required: true
 
       PYANSYS_PYPI_PRIVATE_PAT:
@@ -109,8 +109,8 @@ jobs:
           python .github/scripts/check_server.py
         env:
           TEST_SL_URL: ${{ secrets[matrix.server.url] }}
-          TEST_USER: ${{secrets.TEST_SERVER_ADMIN_USER}}
-          TEST_PASS: ${{secrets.TEST_SERVER_ADMIN_PASS}}
+          TEST_USER: ${{secrets.TEST_SERVER_SYSADMIN_USER}}
+          TEST_PASS: ${{secrets.TEST_SERVER_SYSADMIN_PASS}}
 
   integration-tests:
     name: "Integration tests: ${{ matrix.os }}, v${{ matrix.server.version }}"
@@ -154,8 +154,8 @@ jobs:
           --cov-report=html:.cov/html
         env:
           TEST_SL_URL: ${{ secrets[matrix.server.url] }}
-          TEST_ADMIN_USER: ${{secrets.TEST_SERVER_ADMIN_USER}}
-          TEST_ADMIN_PASS: ${{secrets.TEST_SERVER_ADMIN_PASS}}
+          TEST_ADMIN_USER: ${{secrets.TEST_SERVER_SYSADMIN_USER}}
+          TEST_ADMIN_PASS: ${{secrets.TEST_SERVER_SYSADMIN_PASS}}
 
 #      - name: "Upload coverage to Codecov"
 #        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24  # v5.4.3
@@ -176,8 +176,8 @@ jobs:
         uses: ansys/actions/doc-build@8d3e4946f36c2a7d447b92e34b1022a5c9dc77a7  # v10.0.12
         env:
           TEST_SL_URL: ${{secrets.TEST_SERVER_DEV_URL}}
-          TEST_USER: ${{secrets.TEST_SERVER_ADMIN_USER}}
-          TEST_PASS: ${{secrets.TEST_SERVER_ADMIN_PASS}}
+          TEST_USER: ${{secrets.TEST_SERVER_SYSADMIN_USER}}
+          TEST_PASS: ${{secrets.TEST_SERVER_SYSADMIN_PASS}}
           BUILD_EXAMPLES: "true"
         with:
           check-links: false
