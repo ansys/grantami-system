@@ -50,10 +50,6 @@ on:
         required: true
       TEST_SERVER_ADMIN_PASS:
         required: true
-      TEST_SERVER_USER:
-        required: true
-      TEST_SERVER_PASS:
-        required: true
 
       PYANSYS_PYPI_PRIVATE_PAT:
         required: true
@@ -67,8 +63,8 @@ concurrency:
 
 env:
   PIP_INDEX_URL: "https://${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/"
-  POETRY_HTTP_BASIC_PRIVATE_PYPI_USERNAME: "PAT"
-  POETRY_HTTP_BASIC_PRIVATE_PYPI_PASSWORD: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
+  UV_INDEX_PYANSYS_PYPI_USERNAME: "PAT"
+  UV_INDEX_PYANSYS_PYPI_PASSWORD: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
 
 jobs:
 
@@ -151,10 +147,8 @@ jobs:
           --cov-report=html:.cov/html
         env:
           TEST_SL_URL: ${{ secrets[matrix.server.url] }}
-          TEST_LIST_ADMIN_USER: ${{secrets.TEST_SERVER_ADMIN_USER}}
-          TEST_LIST_ADMIN_PASS: ${{secrets.TEST_SERVER_ADMIN_PASS}}
-          TEST_LIST_USER: ${{secrets.TEST_SERVER_USER}}
-          TEST_LIST_PASS: ${{secrets.TEST_SERVER_PASS}}
+          TEST_ADMIN_USER: ${{secrets.TEST_SERVER_ADMIN_USER}}
+          TEST_ADMIN_PASS: ${{secrets.TEST_SERVER_ADMIN_PASS}}
 
       - name: "Upload coverage to Codecov"
         uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24  # v5.4.3
