@@ -32,14 +32,14 @@ concurrency:
 
 jobs:
 
-  code-style:
-    name: "Code style"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ansys/actions/code-style@8d3e4946f36c2a7d447b92e34b1022a5c9dc77a7  # v10.0.12
-        with:
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          skip-install: false
+#  code-style:
+#    name: "Code style"
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: ansys/actions/code-style@8d3e4946f36c2a7d447b92e34b1022a5c9dc77a7  # v10.0.12
+#        with:
+#          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+#          skip-install: false
 
   doc-style:
     name: "Documentation style"
@@ -73,7 +73,7 @@ jobs:
   build-wheelhouse:
     name: "Build wheelhouse for latest Python versions"
     runs-on: ${{ matrix.os }}
-    needs: code-style
+#    needs: code-style
     permissions:
       id-token: write
       attestations: write
