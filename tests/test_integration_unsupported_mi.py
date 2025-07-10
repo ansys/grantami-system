@@ -24,7 +24,7 @@ import pytest
 
 from ansys.grantami.system import Connection
 
-from .common import admin_password, admin_username, sl_url
+from .common import sl_url, sysadmin_password, sysadmin_username
 
 pytestmark = pytest.mark.integration(mi_versions=[(25, 2), (25, 1), (24, 2), (24, 1)])
 
@@ -35,4 +35,4 @@ def test_connection_raises_exception(mi_version):
         ConnectionError,
         match=f"This package requires a more recent Granta MI version.*version is {current_version}.*at least 26.1",
     ):
-        Connection(sl_url).with_credentials(username=admin_username, password=admin_password).connect()
+        Connection(sl_url).with_credentials(username=sysadmin_username, password=sysadmin_password).connect()
