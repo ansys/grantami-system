@@ -31,7 +31,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-
 #  code-style:
 #    name: "Code style"
 #    runs-on: ubuntu-latest
