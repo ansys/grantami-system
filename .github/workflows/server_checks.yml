@@ -79,6 +79,8 @@ jobs:
         server:
           - name: "AZURE_VM_NAME_DEV"
             url: "TEST_SERVER_DEV_URL"
+          - name: "AZURE_VM_NAME_25R2"
+            url: "TEST_SERVER_25R2_URL"
     steps:
       - name: "Checkout the repository"
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
