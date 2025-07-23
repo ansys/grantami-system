@@ -89,6 +89,10 @@ class ActivityLogFilter:
         self._usage_mode_filter: Optional[models.GsaActivityLogUsageModeFilter] = None
         self._username_filter: Optional[models.GsaActivityLogUsernameFilter] = None
 
+    def __repr__(self) -> str:
+        """Printable representation of the object."""
+        return f"<{self.__class__.__name__} ...>"
+
     def with_application_name(self, application_name: str, case_insensitive_exact_match: bool = False) -> Self:
         """
         Filter based on a single application name used as part of the activity.
@@ -327,8 +331,8 @@ class ActivityLogItem:
         """Printable representation of the object."""
         database_key = f'"{self.database_key}"' if self.database_key else "None"
         repr = (
-            f'"<{self.__class__.__name__} activity_date={self.activity_date}, username="{self.username}", '
-            f'database_key={database_key}, usage_mode="{self.usage_mode}">"'
+            f'<{self.__class__.__name__} activity_date={self.activity_date}, username="{self.username}", '
+            f"database_key={database_key}, usage_mode={self.usage_mode}>"
         )
         return repr
 

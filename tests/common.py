@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from datetime import date, datetime
 import os
 
 from ansys.grantami.system import Connection, SystemApiClient
@@ -41,3 +42,17 @@ def _get_connection(url, username, password) -> SystemApiClient | None:
     else:
         connection = Connection(servicelayer_url=url).with_autologon().connect()
     return connection
+
+
+APP_NAME_1 = "test_app_name"
+APP_NAME_2 = "app_name_with 😂"
+DB_KEY = "test_db_key"
+START_DATE = date(year=2022, month=5, day=12)
+END_DATE = date(year=2023, month=5, day=12)
+USERNAME = "domain\\test_user"
+
+
+def at_midnight(date_: date) -> datetime:
+    "Return a date as a datetime at midnight of that date."
+
+    return datetime.combine(date_, datetime.min.time())
