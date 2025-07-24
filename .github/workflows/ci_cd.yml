@@ -81,12 +81,16 @@ jobs:
            os: [ubuntu-latest, windows-latest]
            python-version: ['3.11', '3.12', '3.13']
     steps:
+      - name: "Checkout the repository"
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+
       - uses: ansys/actions/build-wheelhouse@8d3e4946f36c2a7d447b92e34b1022a5c9dc77a7  # v10.0.12
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           operating-system: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
           attest-provenance: true
+          checkout: false
 
   tests:
     name: "Tests Python ${{ matrix.python-version }}, ${{ matrix.os }}"
