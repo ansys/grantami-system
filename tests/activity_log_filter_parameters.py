@@ -49,7 +49,7 @@ application_name = [
     {
         "with_application_name": {
             "application_name": APP_NAME_1,
-            "case_insensitive_exact_match": False,
+            "exact_match": False,
         },
         "result_includes": {
             "application_name_filter": GsaActivityLogApplicationNameFilter(
@@ -62,7 +62,7 @@ application_name = [
     {
         "with_application_name": {
             "application_name": APP_NAME_2,
-            "case_insensitive_exact_match": True,
+            "exact_match": True,
         },
         "result_includes": {
             "application_name_filter": GsaActivityLogApplicationNameFilter(
@@ -82,7 +82,7 @@ application_name_collection = [
     {
         "with_application_names": {
             "application_names": [APP_NAME_1, APP_NAME_2],
-            "case_insensitive_exact_match": False,
+            "exact_match": False,
         },
         "result_includes": {
             "application_names_collection_filter": GsaActivityLogApplicationNamesCollectionFilter(
@@ -95,7 +95,7 @@ application_name_collection = [
     {
         "with_application_names": {
             "application_names": [APP_NAME_1],
-            "case_insensitive_exact_match": False,
+            "exact_match": False,
         },
         "result_includes": {
             "application_names_collection_filter": GsaActivityLogApplicationNamesCollectionFilter(
@@ -108,7 +108,7 @@ application_name_collection = [
     {
         "with_application_names": {
             "application_names": [APP_NAME_1, APP_NAME_2],
-            "case_insensitive_exact_match": True,
+            "exact_match": True,
         },
         "result_includes": {
             "application_names_collection_filter": GsaActivityLogApplicationNamesCollectionFilter(
@@ -121,7 +121,7 @@ application_name_collection = [
     {
         "with_application_names": {
             "application_names": [APP_NAME_2],
-            "case_insensitive_exact_match": True,
+            "exact_match": True,
         },
         "result_includes": {
             "application_names_collection_filter": GsaActivityLogApplicationNamesCollectionFilter(
@@ -141,7 +141,7 @@ database_key = [
     {
         "with_database_key": {
             "database_key": DB_KEY,
-            "case_insensitive_exact_match": False,
+            "exact_match": False,
         },
         "result_includes": {
             "database_key_filter": GsaActivityLogDatabaseKeyFilter(
@@ -154,7 +154,7 @@ database_key = [
     {
         "with_database_key": {
             "database_key": DB_KEY,
-            "case_insensitive_exact_match": True,
+            "exact_match": True,
         },
         "result_includes": {
             "database_key_filter": GsaActivityLogDatabaseKeyFilter(
@@ -167,7 +167,7 @@ database_key = [
     {
         "with_database_key": {
             "database_key": None,
-            "case_insensitive_exact_match": True,
+            "exact_match": True,
         },
         "result_includes": {
             "database_key_filter": GsaActivityLogDatabaseKeyFilter(
@@ -358,7 +358,7 @@ username = [
     {
         "with_username": {
             "username": USERNAME,
-            "case_insensitive_exact_match": False,
+            "exact_match": False,
         },
         "result_includes": {
             "username_filter": GsaActivityLogUsernameFilter(
@@ -371,7 +371,7 @@ username = [
     {
         "with_username": {
             "username": USERNAME,
-            "case_insensitive_exact_match": True,
+            "exact_match": True,
         },
         "result_includes": {
             "username_filter": GsaActivityLogUsernameFilter(

@@ -45,7 +45,7 @@ class ActivityLogFilter:
     r"""
     Builder class to create an activity log filter for use with :meth:`~.SystemApiClient.get_activity_logs_where`.
 
-    All text-based fields are case-insensitive.
+    All text-based fields are always case-insensitive.
 
     Examples
     --------
@@ -54,11 +54,11 @@ class ActivityLogFilter:
     >>> client.get_activity_logs_where(pygranta_system_filter)
 
     >>> # Activity logs relating to the MI_Training database
-    >>> mi_training_filter = ActivityLogFilter().with_database_key("MI_Training", case_insensitive_exact_match=True)
+    >>> mi_training_filter = ActivityLogFilter().with_database_key("MI_Training", exact_match=True)
     >>> client.get_activity_logs_where(mi_training_filter)
 
     >>> # Activity logs for a domain user
-    >>> domain_user_filter = ActivityLogFilter().with_username("DOMAIN\\user", case_insensitive_exact_match=True)
+    >>> domain_user_filter = ActivityLogFilter().with_username("DOMAIN\\user", exact_match=True)
     >>> client.get_activity_logs_where(domain_user_filter)
 
     >>> # Activity logs for edit operations using MI Training database using MI Scripting Toolkit, made last month
@@ -93,7 +93,7 @@ class ActivityLogFilter:
         """Printable representation of the object."""
         return f"<{self.__class__.__name__} ...>"
 
-    def with_application_name(self, application_name: str, case_insensitive_exact_match: bool = False) -> Self:
+    def with_application_name(self, application_name: str, exact_match: bool = False) -> Self:
         """
         Filter based on a single application name used as part of the activity.
 
@@ -103,9 +103,9 @@ class ActivityLogFilter:
         ----------
         application_name : str
             The name of the application used as part of the activity.
-        case_insensitive_exact_match : bool, optional
-            If true, the application name must match exactly. Defaults to false, in which case a partial match is
-            allowed.
+        exact_match : bool, optional
+            If true, the application name must match exactly, excluding case sensitivity. Defaults to false, in which
+            case a partial match is allowed.
 
         Returns
         -------
@@ -115,12 +115,12 @@ class ActivityLogFilter:
         self._application_name_filter = models.GsaActivityLogApplicationNameFilter(
             application_name_to_match=application_name,
             match_type=models.GsaActivityLogMatchType.CONTAINSCASEINSENSITIVE
-            if not case_insensitive_exact_match
+            if not exact_match
             else models.GsaActivityLogMatchType.EXACTMATCHCASEINSENSITIVE,
         )
         return self
 
-    def with_application_names(self, application_names: list[str], case_insensitive_exact_match: bool = False) -> Self:
+    def with_application_names(self, application_names: list[str], exact_match: bool = False) -> Self:
         """
         Filter based on multiple application names used as part of the activity.
 
@@ -131,7 +131,7 @@ class ActivityLogFilter:
         ----------
         application_names : list of str
             The names of applications used as part of the activity.
-        case_insensitive_exact_match : bool, optional
+        exact_match : bool, optional
             If true, every application name must be involved in the activity for it to be returned. Defaults to false,
             in which case the activity may contain additional application names not specified here.
 
@@ -143,24 +143,25 @@ class ActivityLogFilter:
         self._application_names_collection_filter = models.GsaActivityLogApplicationNamesCollectionFilter(
             application_names_to_match=application_names,
             collection_match_type=models.GsaActivityLogCollectionMatchType.COLLECTIONCONTAINS
-            if not case_insensitive_exact_match
+            if not exact_match
             else models.GsaActivityLogCollectionMatchType.COLLECTIONEXACTMATCH,
         )
         return self
 
-    def with_database_key(self, database_key: str | None, case_insensitive_exact_match: bool = False) -> Self:
+    def with_database_key(self, database_key: str | None, exact_match: bool = False) -> Self:
         """
         Filter based on a database key used as part of the activity.
 
-        If ``database_key = None``, then the ``case_insensitive_exact_match`` argument is ignored.
+        If ``database_key = None``, then the ``exact_match`` argument is ignored.
 
         Parameters
         ----------
         database_key : str or None
             The name of the database key used as part of the activity. To find activities relating to application use
             only, specify :class:`None`.
-        case_insensitive_exact_match : bool, optional
-            If true, the database key must match exactly. Defaults to false, in which case a partial match is allowed.
+        exact_match : bool, optional
+            If true, the database key must match exactly, excluding case sensitivity. Defaults to false, in which
+            case a partial match is allowed.
 
         Returns
         -------
@@ -170,7 +171,7 @@ class ActivityLogFilter:
         self._database_key_filter = models.GsaActivityLogDatabaseKeyFilter(
             database_key_to_match=database_key,
             match_type=models.GsaActivityLogMatchType.CONTAINSCASEINSENSITIVE
-            if not case_insensitive_exact_match and database_key is not None
+            if not exact_match and database_key is not None
             else models.GsaActivityLogMatchType.EXACTMATCHCASEINSENSITIVE,
         )
         return self
@@ -235,7 +236,7 @@ class ActivityLogFilter:
         self._usage_mode_filter = models.GsaActivityLogUsageModeFilter(usage_mode_to_match=mode)
         return self
 
-    def with_username(self, username: str, case_insensitive_exact_match: bool = False) -> Self:
+    def with_username(self, username: str, exact_match: bool = False) -> Self:
         """
         Filter based on the username of the user who performed the activity.
 
@@ -243,8 +244,9 @@ class ActivityLogFilter:
         ----------
         username : str
             The username of the user who performed the activity.
-        case_insensitive_exact_match : bool, optional
-            If true, the username must match exactly. Defaults to false, in which case a partial match is allowed.
+        exact_match : bool, optional
+            If true, the username must match exactly, excluding case sensitivity.  Defaults to false, in which case a
+            partial match is allowed.
 
         Returns
         -------
@@ -254,7 +256,7 @@ class ActivityLogFilter:
         self._username_filter = models.GsaActivityLogUsernameFilter(
             username_to_match=username,
             match_type=models.GsaActivityLogMatchType.CONTAINSCASEINSENSITIVE
-            if not case_insensitive_exact_match
+            if not exact_match
             else models.GsaActivityLogMatchType.EXACTMATCHCASEINSENSITIVE,
         )
         return self
