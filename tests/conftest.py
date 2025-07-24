@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import pytest
+import requests_mock
 
 from .common import (
     _get_connection,
@@ -88,3 +89,9 @@ def process_integration_marks(request, mi_version):
         formatted_version = ".".join(str(v) for v in mi_version)
         skip_message = f'Test skipped for Granta MI release version "{formatted_version}"'
         pytest.skip(skip_message)
+
+
+@pytest.fixture()
+def mocker():
+    m = requests_mock.Mocker()
+    return m

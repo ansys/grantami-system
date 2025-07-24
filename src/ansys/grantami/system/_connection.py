@@ -311,18 +311,18 @@ class Connection(ApiClientFactory):
         except ApiException as e:
             if e.status_code == 404:
                 raise ConnectionError(
-                    "Cannot find the Server API definition in the Granta MI Service Layer. Ensure "
+                    "Cannot find the Server API definition in Granta MI Service Layer. Ensure "
                     "that a compatible version of Granta MI is available and try again."
                 ) from e
             else:
                 raise ConnectionError(
-                    "An unexpected error occurred when trying to connect to the Server API in the Granta "
+                    "An unexpected error occurred when trying to connect to the Server API in Granta "
                     " MI Service Layer. Check the Service Layer logs for more information and try "
                     "again."
                 ) from e
         except requests.exceptions.RetryError as e:
             raise ConnectionError(
-                "An unexpected error occurred when trying to connect to the Granta MI Server API. Check "
+                "An unexpected error occurred when trying to connect to Granta MI Server API. Check "
                 "that SSL certificates have been configured for communications between the Granta MI "
                 "Server and client Granta MI applications."
             ) from e
