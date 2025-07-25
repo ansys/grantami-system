@@ -112,6 +112,8 @@ class ActivityLogFilter:
         ActivityLogFilter
             The current :class:`.ActivityLogFilter` object.
         """
+        # TODO: Think about discovery of application names
+
         self._application_name_filter = models.GsaActivityLogApplicationNameFilter(
             application_name_to_match=application_name,
             match_type=models.GsaActivityLogMatchType.CONTAINSCASEINSENSITIVE

@@ -298,7 +298,7 @@ class Connection(ApiClientFactory):
 
         Parameters
         ----------
-        client : :class:`~.JobQueueApiClient`
+        client : :class:`~.SystemApiClient`
             Client object to test.
 
         Raises
