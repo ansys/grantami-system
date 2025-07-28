@@ -1,0 +1,218 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ansys"]
+exclude = [
+	".gitignore"
+]
+
+[tool.uv]
+required-version = ">=0.7.0"
+keyring-provider = "subprocess"
+native-tls = true
+
+[project]
+name = "ansys-grantami-system"
+description = "Control Granta MI system administration functions from Python"
+version = "0.1.0"
+license = "MIT"
+authors = [{ name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }]
+maintainers = [{ name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }]
+repository = "https://github.com/ansys/grantami-system"
+documentation = "https://system.grantami.docs.pyansys.com"
+readme = "README.rst"
+keywords = [
+  "Ansys",
+  "Granta MI",
+]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Development Status :: 2 - Pre-Alpha",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX",
+  "Operating System :: MacOS",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+
+requires-python = ">=3.11"
+dependencies = [
+    "ansys-grantami-serverapi-openapi==5.1.0.dev649",
+    "requests~=2.26",
+    "ansys-openapi-common~=2.0",
+]
+
+[tool.uv.sources]
+ansys-grantami-serverapi-openapi = { index = "pyansys-pypi" }
+
+[[tool.uv.index]]
+name = "pyansys-pypi"
+url = "https://pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/"
+explicit = true
+authenticate = "always"
+
+[dependency-groups]
+dev = [
+    "pytest~=8.0",
+    "pytest-cov~=6.2",
+    "mypy~=1.9",
+    "types-requests~=2.26",
+    "requests-mock>=1.12.1",
+]
+
+doc = [
+    "sphinx~=8.0",
+    "numpydoc~=1.4",
+    "ansys-sphinx-theme~=1.0",
+    "sphinx-copybutton~=0.5",
+    "jupytext~=1.14",
+    "nbsphinx~=0.9",
+    "ipykernel~=6.21", # required by nbsphinx to run notebooks.
+    "sphinx-jinja~=2.0",
+    "sphinx-toolbox~=4.0",
+    "sphinx-design~=0.6",
+    "sphinx-autoapi~=3.1",
+    "sphinxcontrib-napoleon~=0.7",
+]
+
+[tool.coverage.run]
+source = ["ansys.grantami"]
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.mypy]
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+check_untyped_defs = true
+show_error_codes = true
+files = "src"
+explicit_package_bases = true
+mypy_path = "$MYPY_CONFIG_FILE_DIR/src"
+namespace_packages = true
+
+[tool.pytest.ini_options]
+testpaths = "./tests"
+markers = [
+    """integration(*, mi_versions: None | list[tuple[int, int]] = None): The test requires a real database.
+    The optional keyword-only argument \"mi_versions\" represents a MAJOR, MINOR version of Granta MI. The test will \
+    be skipped if run against an incompatible Granta MI version. Deselect all integration tests with \
+    'pytest -m \"not integration\"'. Specify MI version with '--mi-version MAJOR.MINOR'.""",
+]
+filterwarnings = "error"
+
+[tool.numpydoc_validation]
+checks = [
+    "all",   # report on all checks, except the below
+    "EX01",
+    "SA01",
+    "ES01",
+]
+
+exclude = [  # don't report on objects that match any of these regexes
+    '\.__repr__$',
+    '\.__new__$',
+    '\.__init__$',
+]
+
+[tool.ruff]
+line-length = 120
+fix = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle, see https://docs.astral.sh/ruff/rules/#pycodestyle-e-w
+    "D",    # pydocstyle, see https://docs.astral.sh/ruff/rules/#pydocstyle-d
+    "F",    # pyflakes, see https://docs.astral.sh/ruff/rules/#pyflakes-f
+    "I",    # isort, see https://docs.astral.sh/ruff/rules/#isort-i
+    "N",    # pep8-naming, see https://docs.astral.sh/ruff/rules/#pep8-naming-n
+    "PTH",  # flake8-use-pathlib, https://docs.astral.sh/ruff/rules/#flake8-use-pathlib-pth
+    "TD",   # flake8-todos, https://docs.astral.sh/ruff/rules/#flake8-todos-td
+]
+
+ignore = [
+    "TD002", # Missing author in TODOs comment
+    "TD003", # Missing issue link in TODOs comment
+    "D107", # Missing docstring in __init__
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore `F401` (import violations) in all `__init__.py` files.
+"__init__.py" = ["F401"]
+"!src/**.py" = ["D"]
+"examples/**.py" = ["E402"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-sort-within-sections = true
+known-third-party = ["ansys.openapi.common"]
+
+[tool.towncrier]
+package = "ansys.grantami.system"
+directory = "doc/changelog.d"
+filename = "doc/source/changelog.rst"
+start_string = ".. towncrier release notes start\n"
+template = "doc/changelog.d/changelog_template.jinja"
+title_format = "`{version} <https://github.com/ansys/grantami-system/releases/tag/v{version}>`_ - {project_date}"
+issue_format = "`#{issue} <https://github.com/ansys/grantami-system/pull/{issue}>`_"
+
+[[tool.towncrier.type]]
+directory = "added"
+name = "Added"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "changed"
+name = "Changed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "fixed"
+name = "Fixed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "dependencies"
+name = "Dependencies"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "miscellaneous"
+name = "Miscellaneous"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "documentation"
+name = "Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "maintenance"
+name = "Maintenance"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "test"
+name = "Test"
+showcontent = true
