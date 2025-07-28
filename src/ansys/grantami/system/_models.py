@@ -51,15 +51,15 @@ class ActivityLogFilter:
     --------
     >>> # Activity logs for this library
     >>> pygranta_system_filter = ActivityLogFilter().with_application_name("PyGranta System")
-    >>> client.get_activity_logs_where(pygranta_system_filter)
+    >>> client.get_activity_items_where(pygranta_system_filter)
 
     >>> # Activity logs relating to the MI_Training database
     >>> mi_training_filter = ActivityLogFilter().with_database_key("MI_Training", exact_match=True)
-    >>> client.get_activity_logs_where(mi_training_filter)
+    >>> client.get_activity_items_where(mi_training_filter)
 
     >>> # Activity logs for a domain user
     >>> domain_user_filter = ActivityLogFilter().with_username("DOMAIN\\user", exact_match=True)
-    >>> client.get_activity_logs_where(domain_user_filter)
+    >>> client.get_activity_items_where(domain_user_filter)
 
     >>> # Activity logs for edit operations using MI Training database using MI Scripting Toolkit, made last month
     >>> first_of_this_month = datetime.date.today().replace(day=1)
@@ -73,7 +73,7 @@ class ActivityLogFilter:
     ...     .with_date_from(first_of_last_month, inclusive=True)
     ...     .with_date_to(last_of_last_month, inclusive=True)
     ... )
-    >>> view_filter.get_activity_logs_where(combination_filter)
+    >>> view_filter.get_activity_items_where(combination_filter)
     """
 
     def __init__(self) -> None:

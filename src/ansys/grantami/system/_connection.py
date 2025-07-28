@@ -127,60 +127,60 @@ class SystemApiClient(ApiClient, ABC):
         """Printable representation of the object."""
         return f"<{self.__class__.__name__} url: {self._service_layer_url}>"
 
-    def get_all_activity_logs(self, page_size: Optional[int] = 1000) -> Iterator[ActivityLogItem]:
+    def get_all_activity_items(self, page_size: Optional[int] = 1000) -> Iterator[ActivityLogItem]:
         """
-        Get all activity logs from the Granta MI server.
+        Get all activity information from the Granta MI server.
 
         Parameters
         ----------
         page_size : int | None, optional
-            The page size to use when requesting activity logs. If None, then paging is disabled and the logs will be
-            returned in a single request. Defaults to 1000.
+            The number of items to include in a single response. If None, then paging is disabled and all activity
+            information will be returned in a single response. Defaults to 1000.
 
         Returns
         -------
         Iterator of ActivityLogItem
-            An iterator containing the returned activity log.
+            An iterator containing the returned activity information.
 
         Warnings
         --------
-        Activity logs are updated on the Granta MI server at midnight server time. If a paged request is made while the
-        activity logs are being updated, duplicate results may be retrieved from the server.
+        Activity information is updated on the Granta MI server at midnight server time. If a paged request is made
+        while the activity report is being updated, duplicate results may be retrieved from the server.
 
-        Avoid making paged requests while the server is updating the activity logs.
+        Avoid making paged requests while the server is updating the activity report.
         """
         gsa_filter = ActivityLogFilter()
-        return self.get_activity_logs_where(filter_=gsa_filter, page_size=page_size)
+        return self.get_activity_items_where(filter_=gsa_filter, page_size=page_size)
 
-    def get_activity_logs_where(
+    def get_activity_items_where(
         self,
         filter_: ActivityLogFilter,
         page_size: Optional[int] = 1000,
     ) -> Iterator[ActivityLogItem]:
         """
-        Get activity logs from the Granta MI server that match a filter.
+        Get activity information from the Granta MI server that matches a filter.
 
         Parameters
         ----------
         filter_ : ActivityLogFilter
             The filter to apply to the request.
         page_size : int | None, optional
-            The page size to use when requesting activity logs. If None, then paging is disabled and the logs will be
-            returned in a single request. Defaults to 1000.
+            The number of items to include in a single response. If None, then paging is disabled and all activity
+            information will be returned in a single response. Defaults to 1000.
 
         Returns
         -------
         Iterator of ActivityLogItem
-            An iterator containing the returned activity log.
+            An iterator containing the returned activity information.
 
         Warnings
         --------
-        Activity logs are updated on the Granta MI server at midnight server time. If a paged request is made while the
-        activity logs are being updated, duplicate results may be retrieved from the server.
+        Activity information is updated on the Granta MI server at midnight server time. If a paged request is made
+        while the activity report is being updated, duplicate results may be retrieved from the server.
 
-        Avoid making paged requests while the server is updating the activity logs.
+        Avoid making paged requests while the server is updating the activity report.
         """
-        logger.info("Fetching activity log entries...")
+        logger.info("Fetching activity report items...")
 
         if page_size is not None:
             logger.info(f"Paging options were specified, fetching in batches of size {page_size}...")

@@ -108,13 +108,13 @@ class TestActivityLog:
         return mocked_method
 
     def test_read_all_items_unpaged(self, client, api_method):
-        items = client.get_all_activity_logs(page_size=None)
+        items = client.get_all_activity_items(page_size=None)
         api_method.assert_called_once_with(body=GsaActivityLogEntriesFilter())
         assert len(list(items)) == 3
 
     @pytest.mark.parametrize("page_size", [4, 5, 50000])
     def test_read_all_items_page_size_larger_than_response_length(self, client, api_method, page_size):
-        item_iterator = client.get_all_activity_logs(page_size=page_size)
+        item_iterator = client.get_all_activity_items(page_size=page_size)
         api_method.assert_not_called()
 
         items = list(item_iterator)
@@ -128,7 +128,7 @@ class TestActivityLog:
         assert len(list(items)) == 3
 
     def test_read_all_items_page_size_euqal_to_response_length(self, client, api_method):
-        item_iterator = client.get_all_activity_logs(page_size=3)
+        item_iterator = client.get_all_activity_items(page_size=3)
         api_method.assert_not_called()
 
         items = list(item_iterator)
@@ -142,7 +142,7 @@ class TestActivityLog:
         assert len(list(items)) == 3
 
     def test_read_all_items_page_size_1(self, client, api_method):
-        item_iterator = client.get_all_activity_logs(page_size=1)
+        item_iterator = client.get_all_activity_items(page_size=1)
         api_method.assert_not_called()
 
         items = list(item_iterator)
@@ -158,7 +158,7 @@ class TestActivityLog:
         assert len(list(items)) == 3
 
     def test_read_all_items_page_size_2(self, client, api_method):
-        item_iterator = client.get_all_activity_logs(page_size=2)
+        item_iterator = client.get_all_activity_items(page_size=2)
         api_method.assert_not_called()
 
         items = list(item_iterator)
@@ -173,12 +173,12 @@ class TestActivityLog:
         assert len(list(items)) == 3
 
     def test_with_filter_unpaged(self, client, api_method, filter_):
-        items = client.get_activity_logs_where(filter_, page_size=None)
+        items = client.get_activity_items_where(filter_, page_size=None)
         api_method.assert_called_once_with(body=filter_._to_model())
         assert len(list(items)) == 3
 
     def test_with_filter_paged(self, client, api_method, filter_):
-        item_iterator = client.get_activity_logs_where(filter_, page_size=1)
+        item_iterator = client.get_activity_items_where(filter_, page_size=1)
         api_method.assert_not_called()
 
         items = list(item_iterator)
