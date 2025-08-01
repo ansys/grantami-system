@@ -81,6 +81,10 @@ doc = [
     "sphinx-autoapi~=3.1",
     "sphinxcontrib-napoleon~=0.7",
 ]
+examples = [
+    "pandas>=2.3.1",
+    "plotly>=6.2.0",
+]
 
 [tool.coverage.run]
 source = ["ansys.grantami"]
