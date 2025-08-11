@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.13.1
+#       jupytext_version: 1.17.2
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -28,7 +28,7 @@
 #
 # This returns a client object, called ``client`` in these examples.
 
-# + tags=[]
+# +
 from ansys.grantami.system import Connection
 
 connection = Connection("http://my_grantami_server/mi_servicelayer").with_autologon()
