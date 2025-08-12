@@ -182,7 +182,7 @@ class SystemApiClient(ApiClient, ABC):
             client: "SystemApiClient",
             gsa_filter: models.GsaActivityLogEntriesFilter,
             page: int,
-        ) -> list[ActivityLogItem]:
+        ) -> list[ActivityItem]:
             """
             Request the next batch of activity log information from Granta MI.
 
@@ -197,16 +197,16 @@ class SystemApiClient(ApiClient, ABC):
 
             Returns
             -------
-            List of ActivityLogItem
+            List of ActivityItem
                 A list containing a page of the activity log.
             """
             _response = client.activity_log_api.get_entries(body=gsa_filter, page_size=page_size, page=page)
             if _response is None:
                 raise ValueError("ActivityLogApi.get_entries must not return None")
-            return [ActivityLogItem._from_model(item) for item in _response.entries]
+            return [ActivityItem._from_model(item) for item in _response.entries]
 
         partial_func = functools.partial(get_next_page, self, filter_._to_model())
-        return _PagedResult(partial_func, ActivityLogItem)
+        return _PagedResult(partial_func, ActivityItem)
 
 
 class Connection(ApiClientFactory):
