@@ -369,6 +369,25 @@ class ActivityLogItem:
             database_key=model.database_key if model.database_key else None,
         )
 
+    def to_dict(self) -> dict[str, date | str | ActivityUsageMode | list[str] | None]:
+        """
+        Return a dictionary representation of the object.
+
+        Can be used to create a DataFrame.
+
+        Returns
+        -------
+        dict[str, date | str | ActivityUsageMode | list[str] | None]
+            The object represented as a dictionary. Each key-value pair corresponds to a public attribute of the object.
+        """
+        return {
+            "database_key": self.database_key,
+            "usage_mode": self.usage_mode,
+            "application_names": self.application_names,
+            "activity_date": self.activity_date,
+            "username": self.username,
+        }
+
 
 T = TypeVar("T")
 

@@ -162,3 +162,23 @@ class TestActivityLogItem:
         assert item.usage_mode == ActivityUsageMode.VIEW
         assert item.activity_date == START_DATE
         assert set(item.application_names) == {APP_NAME_2}
+
+    def test_model_to_dict_with_db_key(self):
+        dict_representation = self.item_with_db_key.to_dict()
+        assert dict_representation == dict(
+            activity_date=START_DATE,
+            application_names=[APP_NAME_1, APP_NAME_2],
+            username=USERNAME,
+            usage_mode=ActivityUsageMode.EDIT,
+            database_key=DB_KEY,
+        )
+
+    def test_model_to_dict_without_db_key(self):
+        dict_representation = self.item_without_db_key.to_dict()
+        assert dict_representation == dict(
+            activity_date=START_DATE,
+            application_names=[APP_NAME_1, APP_NAME_2],
+            username=USERNAME,
+            usage_mode=ActivityUsageMode.EDIT,
+            database_key=None,
+        )
