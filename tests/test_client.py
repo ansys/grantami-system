@@ -107,11 +107,6 @@ class TestActivityLog:
         monkeypatch.setattr(ActivityLogApi, "get_entries", mocked_method)
         return mocked_method
 
-    def test_read_all_items_unpaged(self, client, api_method):
-        items = client.get_activity_report(page_size=None)
-        api_method.assert_called_once_with(body=GsaActivityLogEntriesFilter())
-        assert len(list(items)) == 3
-
     @pytest.mark.parametrize("page_size", [4, 5, 50000])
     def test_read_all_items_page_size_larger_than_response_length(self, client, api_method, page_size):
         item_iterator = client.get_activity_report(page_size=page_size)
@@ -127,7 +122,7 @@ class TestActivityLog:
         assert api_method.call_args_list[1].kwargs == dict(page=2, **common_called_kwargs)
         assert len(list(items)) == 3
 
-    def test_read_all_items_page_size_euqal_to_response_length(self, client, api_method):
+    def test_read_all_items_page_size_equal_to_response_length(self, client, api_method):
         item_iterator = client.get_activity_report(page_size=3)
         api_method.assert_not_called()
 
@@ -170,11 +165,6 @@ class TestActivityLog:
         assert api_method.call_args_list[0].kwargs == dict(page=1, **common_called_kwargs)
         assert api_method.call_args_list[1].kwargs == dict(page=2, **common_called_kwargs)
         assert api_method.call_args_list[2].kwargs == dict(page=3, **common_called_kwargs)
-        assert len(list(items)) == 3
-
-    def test_with_filter_unpaged(self, client, api_method, filter_):
-        items = client.get_activity_report_where(filter_, page_size=None)
-        api_method.assert_called_once_with(body=filter_._to_model())
         assert len(list(items)) == 3
 
     def test_with_filter_paged(self, client, api_method, filter_):

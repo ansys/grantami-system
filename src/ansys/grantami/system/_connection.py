@@ -27,7 +27,6 @@ Defines the client for interacting with Granta MI.
 """
 
 from abc import ABC
-from datetime import timezone
 import functools
 from typing import Iterator, Optional
 
@@ -111,7 +110,6 @@ class SystemApiClient(ApiClient, ABC):
         logger.debug(f"Service URL: {api_url}")
         super().__init__(session, api_url, configuration)
         self._instantiate_apis()
-        self._server_timezone = timezone.utc
 
     def _instantiate_apis(self) -> None:
         """
@@ -133,9 +131,8 @@ class SystemApiClient(ApiClient, ABC):
 
         Parameters
         ----------
-        page_size : int | None, optional
-            The number of items to include in a single response. If None, then paging is disabled and all activity
-            information will be returned in a single response. Defaults to 1000.
+        page_size : int, optional
+            The number of items to include in a single response. Defaults to 1000.
 
         Returns
         -------
@@ -144,10 +141,10 @@ class SystemApiClient(ApiClient, ABC):
 
         Warnings
         --------
-        Activity information is updated on the Granta MI server at midnight server time. If a paged request is made
+        Activity information is updated on the Granta MI server at midnight server time. If a request is made
         while the activity report is being updated, duplicate results may be retrieved from the server.
 
-        Avoid making paged requests while the server is updating the activity report.
+        Avoid making requests while the server is updating the activity report.
         """
         gsa_filter = ActivityReportFilter()
         return self.get_activity_report_where(filter_=gsa_filter, page_size=page_size)
@@ -165,8 +162,7 @@ class SystemApiClient(ApiClient, ABC):
         filter_ : ActivityReportFilter
             The filter to apply to the request.
         page_size : int | None, optional
-            The number of items to include in a single response. If None, then paging is disabled and all activity
-            information will be returned in a single response. Defaults to 1000.
+            The number of items to include in a single response. Defaults to 1000.
 
         Returns
         -------
@@ -175,35 +171,42 @@ class SystemApiClient(ApiClient, ABC):
 
         Warnings
         --------
-        Activity information is updated on the Granta MI server at midnight server time. If a paged request is made
+        Activity information is updated on the Granta MI server at midnight server time. If a request is made
         while the activity report is being updated, duplicate results may be retrieved from the server.
 
-        Avoid making paged requests while the server is updating the activity report.
+        Avoid making requests while the server is updating the activity report.
         """
-        logger.info("Fetching activity report items...")
+        logger.info(f"Fetching activity log entries in batches of size {page_size}...")
 
-        if page_size is not None:
-            logger.info(f"Paging options were specified, fetching in batches of size {page_size}...")
+        def get_next_page(
+            client: "SystemApiClient",
+            gsa_filter: models.GsaActivityLogEntriesFilter,
+            page: int,
+        ) -> list[ActivityLogItem]:
+            """
+            Request the next batch of activity log information from Granta MI.
 
-            def get_next_page(
-                client: "SystemApiClient",
-                gsa_filter: models.GsaActivityLogEntriesFilter,
-                page: int,
-            ) -> list[ActivityItem]:
-                _response = client.activity_log_api.get_entries(body=gsa_filter, page_size=page_size, page=page)
-                if _response is None:
-                    raise ValueError("ActivityLogApi.get_entries must not return None")
-                return [ActivityItem._from_model(item) for item in _response.entries]
+            Parameters
+            ----------
+            client : SystemApiClient
+                The client to use for the API request.
+            gsa_filter : models.GsaActivityLogEntriesFilter
+                The filter used to restrict the items in the response.
+            page : int
+                The page number to request.
 
-            partial_func = functools.partial(get_next_page, self, filter_._to_model())
-            return _PagedResult(partial_func, ActivityItem)
+            Returns
+            -------
+            List of ActivityLogItem
+                A list containing a page of the activity log.
+            """
+            _response = client.activity_log_api.get_entries(body=gsa_filter, page_size=page_size, page=page)
+            if _response is None:
+                raise ValueError("ActivityLogApi.get_entries must not return None")
+            return [ActivityLogItem._from_model(item) for item in _response.entries]
 
-        logger.info("No paging options were specified, fetching all results...")
-        gsa_filter = filter_._to_model()
-        response = self.activity_log_api.get_entries(body=gsa_filter)
-        if response is None:
-            raise ValueError("ActivityLogApi.get_entries must not return None")
-        return iter(ActivityItem._from_model(item) for item in response.entries)
+        partial_func = functools.partial(get_next_page, self, filter_._to_model())
+        return _PagedResult(partial_func, ActivityLogItem)
 
 
 class Connection(ApiClientFactory):
