@@ -43,7 +43,7 @@ import requests
 from ansys.grantami.serverapi_openapi.v2026r1 import api, models
 
 from ._logger import logger
-from ._models import ActivityLogFilter, ActivityLogItem, _PagedResult
+from ._models import ActivityItem, ActivityReportFilter, _PagedResult
 
 PROXY_PATH = "/proxy/v1.svc/mi"
 AUTH_PATH = "/Health/v2.svc"
@@ -127,7 +127,7 @@ class SystemApiClient(ApiClient, ABC):
         """Printable representation of the object."""
         return f"<{self.__class__.__name__} url: {self._service_layer_url}>"
 
-    def get_all_activity_items(self, page_size: Optional[int] = 1000) -> Iterator[ActivityLogItem]:
+    def get_all_activity_report(self, page_size: Optional[int] = 1000) -> Iterator[ActivityItem]:
         """
         Get all activity information from the Granta MI server.
 
@@ -139,7 +139,7 @@ class SystemApiClient(ApiClient, ABC):
 
         Returns
         -------
-        Iterator of ActivityLogItem
+        Iterator of ActivityItem
             An iterator containing the returned activity information.
 
         Warnings
@@ -149,20 +149,20 @@ class SystemApiClient(ApiClient, ABC):
 
         Avoid making paged requests while the server is updating the activity report.
         """
-        gsa_filter = ActivityLogFilter()
+        gsa_filter = ActivityReportFilter()
         return self.get_activity_items_where(filter_=gsa_filter, page_size=page_size)
 
     def get_activity_items_where(
         self,
-        filter_: ActivityLogFilter,
+        filter_: ActivityReportFilter,
         page_size: Optional[int] = 1000,
-    ) -> Iterator[ActivityLogItem]:
+    ) -> Iterator[ActivityItem]:
         """
         Get activity information from the Granta MI server that matches a filter.
 
         Parameters
         ----------
-        filter_ : ActivityLogFilter
+        filter_ : ActivityReportFilter
             The filter to apply to the request.
         page_size : int | None, optional
             The number of items to include in a single response. If None, then paging is disabled and all activity
@@ -170,7 +170,7 @@ class SystemApiClient(ApiClient, ABC):
 
         Returns
         -------
-        Iterator of ActivityLogItem
+        Iterator of ActivityItem
             An iterator containing the returned activity information.
 
         Warnings
@@ -189,21 +189,21 @@ class SystemApiClient(ApiClient, ABC):
                 client: "SystemApiClient",
                 gsa_filter: models.GsaActivityLogEntriesFilter,
                 page: int,
-            ) -> list[ActivityLogItem]:
+            ) -> list[ActivityItem]:
                 _response = client.activity_log_api.get_entries(body=gsa_filter, page_size=page_size, page=page)
                 if _response is None:
                     raise ValueError("ActivityLogApi.get_entries must not return None")
-                return [ActivityLogItem._from_model(item) for item in _response.entries]
+                return [ActivityItem._from_model(item) for item in _response.entries]
 
             partial_func = functools.partial(get_next_page, self, filter_._to_model())
-            return _PagedResult(partial_func, ActivityLogItem)
+            return _PagedResult(partial_func, ActivityItem)
 
         logger.info("No paging options were specified, fetching all results...")
         gsa_filter = filter_._to_model()
         response = self.activity_log_api.get_entries(body=gsa_filter)
         if response is None:
             raise ValueError("ActivityLogApi.get_entries must not return None")
-        return iter(ActivityLogItem._from_model(item) for item in response.entries)
+        return iter(ActivityItem._from_model(item) for item in response.entries)
 
 
 class Connection(ApiClientFactory):

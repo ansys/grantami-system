@@ -25,12 +25,12 @@ from types import NoneType
 
 import pytest
 
-from ansys.grantami.system import ActivityLogFilter, ActivityLogItem, ActivityUsageMode
+from ansys.grantami.system import ActivityItem, ActivityReportFilter, ActivityUsageMode
 
 pytestmark = pytest.mark.integration(mi_versions=[(26, 1)])
 
 
-def _validate_activity_log_item(item: ActivityLogItem, additional_checks: dict = None):
+def _validate_activity_log_item(item: ActivityItem, additional_checks: dict = None):
     """Validate an individual activity log item. By default, these checks are loose:
 
      * It is dynamic and is modified by all access to the system, so we cannot know before accessing it what will be
@@ -38,7 +38,7 @@ def _validate_activity_log_item(item: ActivityLogItem, additional_checks: dict =
     * It is only updated at midnight each day, so we cannot make known changes and then check that those known changes
       have been made.
     """
-    assert isinstance(item, ActivityLogItem)
+    assert isinstance(item, ActivityItem)
     assert item.activity_date < date.today()  # Logs only include entries from the previous day
     assert isinstance(item.application_names, list)
     assert all(isinstance(app_name, str) for app_name in item.application_names)
@@ -52,7 +52,7 @@ def _validate_activity_log_item(item: ActivityLogItem, additional_checks: dict =
 
 
 def test_get_activity_log(connection):
-    activity_log = connection.get_all_activity_items(page_size=None)
+    activity_log = connection.get_all_activity_report(page_size=None)
     item = next(activity_log)
     _validate_activity_log_item(item)
     item = next(activity_log)
@@ -61,7 +61,7 @@ def test_get_activity_log(connection):
 
 @pytest.mark.parametrize("page_size", [1, 2, 5, 10, 100])
 def test_get_activity_log_paged(connection, page_size):
-    activity_log = connection.get_all_activity_items(page_size=page_size)
+    activity_log = connection.get_all_activity_report(page_size=page_size)
     for _ in range(page_size):
         next(activity_log)
     item = next(activity_log)
@@ -69,7 +69,7 @@ def test_get_activity_log_paged(connection, page_size):
 
 
 def test_get_activity_log_no_database(connection):
-    no_database_filter = ActivityLogFilter().with_database_key(None)
+    no_database_filter = ActivityReportFilter().with_database_key(None)
     activity_log = connection.get_activity_items_where(no_database_filter)
     item = next(activity_log)
     _validate_activity_log_item(item, additional_checks={"database_key": None})
@@ -77,7 +77,7 @@ def test_get_activity_log_no_database(connection):
 
 @pytest.mark.parametrize("usage_mode", [ActivityUsageMode.EDIT, ActivityUsageMode.VIEW])
 def test_get_activity_log_by_usage_mode(connection, usage_mode):
-    no_database_filter = ActivityLogFilter().with_usage_mode(usage_mode)
+    no_database_filter = ActivityReportFilter().with_usage_mode(usage_mode)
     activity_log = connection.get_activity_items_where(no_database_filter)
     item = next(activity_log)
     _validate_activity_log_item(item, additional_checks={"usage_mode": usage_mode})

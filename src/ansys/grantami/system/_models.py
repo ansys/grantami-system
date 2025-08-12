@@ -41,32 +41,32 @@ class ActivityUsageMode(Enum):
     EDIT = models.GsaActivityLogUsageMode.EDIT.value
 
 
-class ActivityLogFilter:
+class ActivityReportFilter:
     r"""
-    Builder class to create an activity log filter for use with :meth:`~.SystemApiClient.get_activity_logs_where`.
+    Builder class to create an activity report filter for use with :meth:`~.SystemApiClient.get_activity_logs_where`.
 
     All text-based fields are always case-insensitive.
 
     Examples
     --------
-    >>> # Activity logs for this library
-    >>> pygranta_system_filter = ActivityLogFilter().with_application_name("PyGranta System")
+    >>> # Activity report for this library only
+    >>> pygranta_system_filter = ActivityReportFilter().with_application_name("PyGranta System")
     >>> client.get_activity_items_where(pygranta_system_filter)
 
-    >>> # Activity logs relating to the MI_Training database
-    >>> mi_training_filter = ActivityLogFilter().with_database_key("MI_Training", exact_match=True)
+    >>> # Activity report relating to the MI_Training database
+    >>> mi_training_filter = ActivityReportFilter().with_database_key("MI_Training", exact_match=True)
     >>> client.get_activity_items_where(mi_training_filter)
 
-    >>> # Activity logs for a domain user
-    >>> domain_user_filter = ActivityLogFilter().with_username("DOMAIN\\user", exact_match=True)
+    >>> # Activity report for a domain user
+    >>> domain_user_filter = ActivityReportFilter().with_username("DOMAIN\\user", exact_match=True)
     >>> client.get_activity_items_where(domain_user_filter)
 
-    >>> # Activity logs for edit operations using MI Training database using MI Scripting Toolkit, made last month
+    >>> # Activity report for edit operations using MI Training database using MI Scripting Toolkit, made last month
     >>> first_of_this_month = datetime.date.today().replace(day=1)
     >>> last_of_last_month = first_of_this_month - datetime.timedelta(days=1)
     >>> first_of_last_month = last_of_last_month.replace(day=1)
     >>> combination_filter = (
-    ...     ActivityLogFilter()
+    ...     ActivityReportFilter()
     ...     .with_application_name("Scripting Toolkit")
     ...     .with_database_key("MI_Training")
     ...     .with_usage_mode(ActivityUsageMode.EDIT)
@@ -109,7 +109,7 @@ class ActivityLogFilter:
 
         Returns
         -------
-        ActivityLogFilter
+        ActivityReportFilter
             The current :class:`.ActivityLogFilter` object.
         """
         # TODO: Think about discovery of application names
@@ -139,7 +139,7 @@ class ActivityLogFilter:
 
         Returns
         -------
-        ActivityLogFilter
+        ActivityReportFilter
             The current :class:`.ActivityLogFilter` object.
         """
         self._application_names_collection_filter = models.GsaActivityLogApplicationNamesCollectionFilter(
@@ -167,7 +167,7 @@ class ActivityLogFilter:
 
         Returns
         -------
-        ActivityLogFilter
+        ActivityReportFilter
             The current :class:`.ActivityLogFilter` object.
         """
         self._database_key_filter = models.GsaActivityLogDatabaseKeyFilter(
@@ -192,7 +192,7 @@ class ActivityLogFilter:
 
         Returns
         -------
-        ActivityLogFilter
+        ActivityReportFilter
             The current :class:`.ActivityLogFilter` object.
         """
         self._date_from = datetime.combine(date_from, datetime.min.time(), tzinfo=None)
@@ -213,7 +213,7 @@ class ActivityLogFilter:
 
         Returns
         -------
-        ActivityLogFilter
+        ActivityReportFilter
             The current :class:`.ActivityLogFilter` object.
         """
         self._date_to = datetime.combine(date_to, datetime.min.time(), tzinfo=None)
@@ -231,7 +231,7 @@ class ActivityLogFilter:
 
         Returns
         -------
-        ActivityLogFilter
+        ActivityReportFilter
             The current :class:`.ActivityLogFilter` object.
         """
         mode = models.GsaActivityLogUsageMode(usage_mode.value)
@@ -252,7 +252,7 @@ class ActivityLogFilter:
 
         Returns
         -------
-        ActivityLogFilter
+        ActivityReportFilter
             The current :class:`.ActivityLogFilter` object.
         """
         self._username_filter = models.GsaActivityLogUsernameFilter(
@@ -297,9 +297,9 @@ class ActivityLogFilter:
         return model
 
 
-class ActivityLogItem:
+class ActivityItem:
     """
-    Describes an activity log item as obtained from the API.
+    Describes an activity report item as obtained from the API.
 
     Read-only - do not directly instantiate or modify instances of this class.
 
@@ -344,7 +344,7 @@ class ActivityLogItem:
     def _from_model(
         cls,
         model: models.GsaActivityLogEntry,
-    ) -> "ActivityLogItem":
+    ) -> "ActivityItem":
         """
         Instantiate from a model defined in the auto-generated client code.
 
@@ -355,7 +355,7 @@ class ActivityLogItem:
 
         Returns
         -------
-        ActivityLogItem
+        ActivityItem
             The instantiated object.
         """
         logger.debug("Deserializing ActivityLogItem from API response")
@@ -375,7 +375,7 @@ T = TypeVar("T")
 
 class _PagedResult(Iterator[T]):
     """
-    Object representing the result of a search. Generic subclass of an iterator.
+    Object representing the result of a paged request. Generic subclass of an iterator.
 
     The individual results are obtained by iterating over this object. The results will be
     fetched from the API as and when they are needed.

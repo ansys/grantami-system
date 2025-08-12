@@ -33,7 +33,7 @@ from ansys.grantami.serverapi_openapi.v2026r1.models import (
     GsaActivityLogEntry,
     GsaActivityLogUsageMode,
 )
-from ansys.grantami.system import ActivityLogFilter
+from ansys.grantami.system import ActivityReportFilter
 from ansys.grantami.system._connection import (
     PROXY_PATH,
     SystemApiClient,
@@ -88,7 +88,7 @@ class TestActivityLog:
 
     @pytest.fixture
     def filter_(self):
-        return ActivityLogFilter().with_database_key(database_key=None).with_username("user_name")
+        return ActivityReportFilter().with_database_key(database_key=None).with_username("user_name")
 
     @pytest.fixture
     def api_method(self, monkeypatch, items):
@@ -108,13 +108,13 @@ class TestActivityLog:
         return mocked_method
 
     def test_read_all_items_unpaged(self, client, api_method):
-        items = client.get_all_activity_items(page_size=None)
+        items = client.get_all_activity_report(page_size=None)
         api_method.assert_called_once_with(body=GsaActivityLogEntriesFilter())
         assert len(list(items)) == 3
 
     @pytest.mark.parametrize("page_size", [4, 5, 50000])
     def test_read_all_items_page_size_larger_than_response_length(self, client, api_method, page_size):
-        item_iterator = client.get_all_activity_items(page_size=page_size)
+        item_iterator = client.get_all_activity_report(page_size=page_size)
         api_method.assert_not_called()
 
         items = list(item_iterator)
@@ -128,7 +128,7 @@ class TestActivityLog:
         assert len(list(items)) == 3
 
     def test_read_all_items_page_size_euqal_to_response_length(self, client, api_method):
-        item_iterator = client.get_all_activity_items(page_size=3)
+        item_iterator = client.get_all_activity_report(page_size=3)
         api_method.assert_not_called()
 
         items = list(item_iterator)
@@ -142,7 +142,7 @@ class TestActivityLog:
         assert len(list(items)) == 3
 
     def test_read_all_items_page_size_1(self, client, api_method):
-        item_iterator = client.get_all_activity_items(page_size=1)
+        item_iterator = client.get_all_activity_report(page_size=1)
         api_method.assert_not_called()
 
         items = list(item_iterator)
@@ -158,7 +158,7 @@ class TestActivityLog:
         assert len(list(items)) == 3
 
     def test_read_all_items_page_size_2(self, client, api_method):
-        item_iterator = client.get_all_activity_items(page_size=2)
+        item_iterator = client.get_all_activity_report(page_size=2)
         api_method.assert_not_called()
 
         items = list(item_iterator)
