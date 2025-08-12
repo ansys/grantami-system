@@ -78,7 +78,7 @@ class TestActivityLogFilter:
         assert filter_._to_model().username_filter.match_type == GsaActivityLogMatchType.CONTAINSCASEINSENSITIVE
 
     def test_repr(self):
-        assert repr(ActivityReportFilter()) == "<ActivityLogFilter ...>"
+        assert repr(ActivityReportFilter()) == "<ActivityReportFilter ...>"
 
 
 class TestActivityLogItem:
@@ -124,14 +124,14 @@ class TestActivityLogItem:
 
     def test_repr_with_db_key(self):
         expected_repr = (
-            '<ActivityLogItem activity_date=2022-05-12, username="domain\\test_user", database_key="test_db_key", '
+            '<ActivityItem activity_date=2022-05-12, username="domain\\test_user", database_key="test_db_key", '
             "usage_mode=ActivityUsageMode.EDIT>"
         )
         assert repr(self.item_with_db_key) == expected_repr
 
     def test_repr_without_db_key(self):
         expected_repr = (
-            '<ActivityLogItem activity_date=2022-05-12, username="domain\\test_user", database_key=None, '
+            '<ActivityItem activity_date=2022-05-12, username="domain\\test_user", database_key=None, '
             "usage_mode=ActivityUsageMode.EDIT>"
         )
         assert repr(self.item_without_db_key) == expected_repr

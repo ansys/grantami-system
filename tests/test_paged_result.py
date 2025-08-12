@@ -35,7 +35,7 @@ class TestPagedResult:
             (str, "str"),
             (bool, "bool"),
             (float, "float"),
-            (ActivityItem, "ActivityLogItem"),
+            (ActivityItem, "ActivityItem"),
         ],
     )
     @pytest.mark.parametrize("page_index", [1, 10, 100, 1000])
