@@ -52,7 +52,7 @@ def _validate_activity_log_item(item: ActivityItem, additional_checks: dict = No
 
 
 def test_get_activity_log(connection):
-    activity_log = connection.get_all_activity_report(page_size=None)
+    activity_log = connection.get_activity_report(page_size=None)
     item = next(activity_log)
     _validate_activity_log_item(item)
     item = next(activity_log)
@@ -61,7 +61,7 @@ def test_get_activity_log(connection):
 
 @pytest.mark.parametrize("page_size", [1, 2, 5, 10, 100])
 def test_get_activity_log_paged(connection, page_size):
-    activity_log = connection.get_all_activity_report(page_size=page_size)
+    activity_log = connection.get_activity_report(page_size=page_size)
     for _ in range(page_size):
         next(activity_log)
     item = next(activity_log)
@@ -70,7 +70,7 @@ def test_get_activity_log_paged(connection, page_size):
 
 def test_get_activity_log_no_database(connection):
     no_database_filter = ActivityReportFilter().with_database_key(None)
-    activity_log = connection.get_activity_items_where(no_database_filter)
+    activity_log = connection.get_activity_report_where(no_database_filter)
     item = next(activity_log)
     _validate_activity_log_item(item, additional_checks={"database_key": None})
 
@@ -78,6 +78,6 @@ def test_get_activity_log_no_database(connection):
 @pytest.mark.parametrize("usage_mode", [ActivityUsageMode.EDIT, ActivityUsageMode.VIEW])
 def test_get_activity_log_by_usage_mode(connection, usage_mode):
     no_database_filter = ActivityReportFilter().with_usage_mode(usage_mode)
-    activity_log = connection.get_activity_items_where(no_database_filter)
+    activity_log = connection.get_activity_report_where(no_database_filter)
     item = next(activity_log)
     _validate_activity_log_item(item, additional_checks={"usage_mode": usage_mode})

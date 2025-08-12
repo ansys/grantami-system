@@ -127,7 +127,7 @@ class SystemApiClient(ApiClient, ABC):
         """Printable representation of the object."""
         return f"<{self.__class__.__name__} url: {self._service_layer_url}>"
 
-    def get_all_activity_report(self, page_size: Optional[int] = 1000) -> Iterator[ActivityItem]:
+    def get_activity_report(self, page_size: Optional[int] = 1000) -> Iterator[ActivityItem]:
         """
         Get all activity information from the Granta MI server.
 
@@ -150,9 +150,9 @@ class SystemApiClient(ApiClient, ABC):
         Avoid making paged requests while the server is updating the activity report.
         """
         gsa_filter = ActivityReportFilter()
-        return self.get_activity_items_where(filter_=gsa_filter, page_size=page_size)
+        return self.get_activity_report_where(filter_=gsa_filter, page_size=page_size)
 
-    def get_activity_items_where(
+    def get_activity_report_where(
         self,
         filter_: ActivityReportFilter,
         page_size: Optional[int] = 1000,
