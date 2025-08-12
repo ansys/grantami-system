@@ -51,7 +51,7 @@ dependencies = [
 
 [project.optional-dependencies]
 examples = [
-  "pandas~=2.3",
+  "pandas[excel]~=2.3",
   "jupyterlab>=3,<5",
   "plotly~=6.2.0",
 ]
