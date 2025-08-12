@@ -26,12 +26,13 @@ from unittest.mock import Mock
 import pytest
 
 from ansys.grantami.serverapi_openapi.v2026r1 import models
-from ansys.grantami.serverapi_openapi.v2026r1.api import ActivityLogApi
+from ansys.grantami.serverapi_openapi.v2026r1.api import ActivityLogApi, SchemaApi
 from ansys.grantami.serverapi_openapi.v2026r1.models import (
     GsaActivityLogEntriesFilter,
     GsaActivityLogEntriesInfo,
     GsaActivityLogEntry,
     GsaActivityLogUsageMode,
+    GsaMiVersion,
 )
 from ansys.grantami.system import ActivityLogFilter
 from ansys.grantami.system._connection import (
@@ -192,3 +193,27 @@ class TestActivityLog:
         assert api_method.call_args_list[2].kwargs == dict(page=3, **common_called_kwargs)
         assert api_method.call_args_list[3].kwargs == dict(page=4, **common_called_kwargs)
         assert len(list(items)) == 3
+
+
+class TestGrantaMIVersion:
+    binary_compatibility_version = "1.2.0.0"
+    major_minor_version = "1.2"
+    version = "1.2.3.4"
+    version_tuple = (1, 2, 3, 4)
+
+    @pytest.fixture
+    def api_method(self, monkeypatch):
+        return_value = GsaMiVersion(
+            binary_compatibility_version=self.binary_compatibility_version,
+            major_minor_version=self.major_minor_version,
+            version=self.version,
+        )
+        mocked_method = Mock(return_value=return_value)
+        monkeypatch.setattr(SchemaApi, "get_version", mocked_method)
+        return mocked_method
+
+    def test_get_version_number(self, client, api_method):
+        version = client.get_granta_mi_version()
+        api_method.assert_called_once_with()
+        assert version.major_minor_version == self.version_tuple[0:2]
+        assert version.version == self.version_tuple

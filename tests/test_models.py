@@ -19,6 +19,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import copy
+
 import pytest
 
 from ansys.grantami.serverapi_openapi.v2026r1.models import (
@@ -26,8 +28,9 @@ from ansys.grantami.serverapi_openapi.v2026r1.models import (
     GsaActivityLogEntry,
     GsaActivityLogMatchType,
     GsaActivityLogUsageMode,
+    GsaMiVersion,
 )
-from ansys.grantami.system._models import ActivityLogFilter, ActivityLogItem, ActivityUsageMode
+from ansys.grantami.system._models import ActivityLogFilter, ActivityLogItem, ActivityUsageMode, GrantaMIVersion
 
 from .activity_log_filter_parameters import get_parameters
 from .common import APP_NAME_1, APP_NAME_2, DB_KEY, START_DATE, USERNAME, at_midnight
@@ -162,3 +165,54 @@ class TestActivityLogItem:
         assert item.usage_mode == ActivityUsageMode.VIEW
         assert item.activity_date == START_DATE
         assert set(item.application_names) == {APP_NAME_2}
+
+
+class TestVersion:
+    version = GrantaMIVersion(
+        major_minor_version=(28, 1),
+        version=(28, 1, 19652, 353),
+    )
+    earlier_version = GrantaMIVersion(
+        major_minor_version=(27, 2),
+        version=(27, 2, 19653, 354),
+    )
+
+    def test_repr(self):
+        assert repr(self.version) == "GrantaMIVersion(major_minor_version=(28, 1), version=(28, 1, 19652, 353))"
+
+    def test_str(self):
+        assert str(self.version) == "28.1.19652.353"
+
+    def test_gt(self):
+        assert self.version > self.earlier_version
+
+    def test_gt_tuple(self):
+        assert self.version > self.earlier_version.version
+
+    def test_lt(self):
+        assert self.earlier_version < self.version
+
+    def test_lt_tuple(self):
+        assert self.earlier_version.version < self.version
+
+    def test_eq(self):
+        assert self.version == copy.copy(self.version)
+
+    def test_eq_tuple(self):
+        assert self.version == self.version.version
+
+    def test_neq(self):
+        assert self.version != copy.copy(self.earlier_version)
+
+    def test_neq_tuple(self):
+        assert self.version != self.earlier_version.version
+
+    def test_instantiate_from_model(self):
+        model = GsaMiVersion(
+            binary_compatibility_version="27.1.0.0",
+            major_minor_version="27.1",
+            version="27.1.123.456",
+        )
+        version = GrantaMIVersion._from_model(model)
+        assert version.version == (27, 1, 123, 456)
+        assert version.major_minor_version == (27, 1)
