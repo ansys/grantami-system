@@ -27,7 +27,6 @@ Defines the client for interacting with Granta MI.
 """
 
 from abc import ABC
-from datetime import timezone
 import functools
 from typing import Iterator, Optional
 
@@ -111,7 +110,6 @@ class SystemApiClient(ApiClient, ABC):
         logger.debug(f"Service URL: {api_url}")
         super().__init__(session, api_url, configuration)
         self._instantiate_apis()
-        self._server_timezone = timezone.utc
 
     def _instantiate_apis(self) -> None:
         """
