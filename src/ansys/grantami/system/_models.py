@@ -377,7 +377,7 @@ class ActivityLogItem:
 
         Returns
         -------
-        dict[str, date | str | ActivityUsageMode | list[str] | None]
+        dict[str, datetime.date | str | ActivityUsageMode | list[str] | None]
             The object represented as a dictionary. Each key-value pair corresponds to a public attribute of the object.
         """
         return {
