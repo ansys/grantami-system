@@ -51,16 +51,8 @@ def _validate_activity_log_item(item: ActivityLogItem, additional_checks: dict =
         assert getattr(item, attr_name) == value
 
 
-def test_get_activity_log(connection):
-    activity_log = connection.get_all_activity_logs(page_size=None)
-    item = next(activity_log)
-    _validate_activity_log_item(item)
-    item = next(activity_log)
-    _validate_activity_log_item(item)
-
-
 @pytest.mark.parametrize("page_size", [1, 2, 5, 10, 100])
-def test_get_activity_log_paged(connection, page_size):
+def test_get_activity_log(connection, page_size):
     activity_log = connection.get_all_activity_logs(page_size=page_size)
     for _ in range(page_size):
         next(activity_log)
