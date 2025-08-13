@@ -330,7 +330,7 @@ class Connection(ApiClientFactory):
         # earlier versions. This is not necessary now though, because there is no support for
         # versions earlier than 2026 R1.
 
-        if server_version < MINIMUM_GRANTA_MI_VERSION:
+        if server_version.version < MINIMUM_GRANTA_MI_VERSION:
             raise ConnectionError(
                 f"This package requires a more recent Granta MI version. Detected Granta MI server "
                 f"version is {server_version}, but this package requires at least "
