@@ -169,50 +169,53 @@ class TestActivityLogItem:
 
 class TestVersion:
     version = GrantaMIVersion(
-        major_minor_version=(28, 1),
         version=(28, 1, 19652, 353),
+        binary_compatibility_version="28.1.0.0",
     )
-    earlier_version = GrantaMIVersion(
-        major_minor_version=(27, 2),
-        version=(27, 2, 19653, 354),
+    compatible_version = GrantaMIVersion(
+        version=(28, 1, 19652, 378),
+        binary_compatibility_version="28.1.0.0",
     )
+    valid_model = GsaMiVersion(version="27.1.123.456", binary_compatibility_version="27.1.0.0")
+    valid_model_long = GsaMiVersion(
+        version="24.2.123.456.789.1.2.3.5.7.6.1",
+        binary_compatibility_version="24.2.123.456.0.0.0.0.0.0.0.0",
+    )
+    invalid_model_comma_separated = GsaMiVersion(version="25,8", binary_compatibility_version="25,8,0,0")
+    invalid_model_empty_string = GsaMiVersion(version="", binary_compatibility_version="")
 
     def test_repr(self):
-        assert repr(self.version) == "GrantaMIVersion(major_minor_version=(28, 1), version=(28, 1, 19652, 353))"
+        expected_repr = "GrantaMIVersion(version=(28, 1, 19652, 353), binary_compatibility_version='28.1.0.0')"
+        assert repr(self.version) == expected_repr
 
     def test_str(self):
         assert str(self.version) == "28.1.19652.353"
 
-    def test_gt(self):
-        assert self.version > self.earlier_version
-
-    def test_gt_tuple(self):
-        assert self.version > self.earlier_version.version
-
-    def test_lt(self):
-        assert self.earlier_version < self.version
-
-    def test_lt_tuple(self):
-        assert self.earlier_version.version < self.version
-
     def test_eq(self):
         assert self.version == copy.copy(self.version)
 
-    def test_eq_tuple(self):
-        assert self.version == self.version.version
-
     def test_neq(self):
-        assert self.version != copy.copy(self.earlier_version)
+        assert self.version != copy.copy(self.compatible_version)
 
-    def test_neq_tuple(self):
-        assert self.version != self.earlier_version.version
+    def test_compatible(self):
+        assert self.version.binary_compatibility_version == self.compatible_version.binary_compatibility_version
 
     def test_instantiate_from_model(self):
-        model = GsaMiVersion(
-            binary_compatibility_version="27.1.0.0",
-            major_minor_version="27.1",
-            version="27.1.123.456",
-        )
-        version = GrantaMIVersion._from_model(model)
+        version = GrantaMIVersion._from_model(self.valid_model)
         assert version.version == (27, 1, 123, 456)
         assert version.major_minor_version == (27, 1)
+        assert version.binary_compatibility_version == "27.1.0.0"
+
+    def test_instantiate_from_model_long(self):
+        version = GrantaMIVersion._from_model(self.valid_model_long)
+        assert version.version == (24, 2, 123, 456, 789, 1, 2, 3, 5, 7, 6, 1)
+        assert version.major_minor_version == (24, 2)
+        assert version.binary_compatibility_version == "24.2.123.456.0.0.0.0.0.0.0.0"
+
+    def test_instantiate_from_invalid_model_raises_value_error(self):
+        with pytest.raises(ValueError, match="'25,8' is not a valid version string"):
+            GrantaMIVersion._from_model(self.invalid_model_comma_separated)
+
+    def test_instantiate_from_empty_string_model_raises_value_error(self):
+        with pytest.raises(ValueError, match="'' is not a valid version string"):
+            GrantaMIVersion._from_model(self.invalid_model_empty_string)

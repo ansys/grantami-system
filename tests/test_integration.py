@@ -81,3 +81,10 @@ def test_get_activity_log_by_usage_mode(connection, usage_mode):
     activity_log = connection.get_activity_logs_where(no_database_filter)
     item = next(activity_log)
     _validate_activity_log_item(item, additional_checks={"usage_mode": usage_mode})
+
+
+def test_get_server_version(connection):
+    version = connection.get_granta_mi_version()
+    assert version.major_minor_version
+    assert version.version
+    assert version.binary_compatibility_version

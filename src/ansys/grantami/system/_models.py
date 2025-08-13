@@ -24,7 +24,7 @@
 from dataclasses import dataclass
 from datetime import date, datetime
 from enum import Enum
-from typing import Any, Callable, Iterator, Optional, Self, Type, TypeVar
+from typing import Callable, Iterator, Optional, Self, Type, TypeVar, cast
 
 from ansys.openapi.common import Unset_Type
 
@@ -447,10 +447,23 @@ class _PagedResult(Iterator[T]):
 class GrantaMIVersion:
     """Information about a Granta MI version."""
 
-    major_minor_version: tuple[int, int]
-    """The Granta MI version as a 2-tuple of integers. Used to determine compatibility between versions."""
-    version: tuple[int, int, int, int]
-    """The full Granta MI version as a 4-tuple of integers."""
+    version: tuple[int, int, *tuple[int, ...]]
+    """The full version number as a n-tuple of integers, where n >= 2."""
+
+    binary_compatibility_version: str
+    """The binary compatibility version."""
+
+    @property
+    def major_minor_version(self) -> tuple[int, int]:
+        """
+        The Granta MI version as a 2-tuple of integers. Used to determine API compatibility between versions.
+
+        Returns
+        -------
+        tuple of int
+            The major-minor version as a 2-tuple of ints.
+        """
+        return self.version[:2]
 
     @classmethod
     def _from_model(cls, model: models.GsaMiVersion) -> "GrantaMIVersion":
@@ -467,28 +480,18 @@ class GrantaMIVersion:
         GrantaMIVersion
             The instantiated object.
         """
-        if isinstance(model.major_minor_version, Unset_Type):
-            raise TypeError("Property 'major_minor_version' must not be 'Unset'.")
-        major_minor_version_parsed = cls._string_to_tuple(model.major_minor_version)
-        if len(major_minor_version_parsed) != 2:
-            raise ValueError("Property 'major_minor_version' must be a 2-tuple.")
-
         if isinstance(model.version, Unset_Type):
             raise TypeError("Property 'version' must not be 'Unset'.")
-        version_parsed = cls._string_to_tuple(model.version)
-        if len(version_parsed) != 4:
-            raise ValueError("Property 'major_minor_version' must be a 4-tuple.")
-
-        result = cls(
-            major_minor_version=major_minor_version_parsed,
-            version=version_parsed,
-        )
+        version = cls._string_to_tuple(model.version)
+        if isinstance(model.binary_compatibility_version, Unset_Type):
+            raise TypeError("Property 'binary_compatibility_version' must not be 'Unset'.")
+        result = cls(version=version, binary_compatibility_version=model.binary_compatibility_version)
         return result
 
     @staticmethod
-    def _string_to_tuple(version: str) -> tuple[int, ...]:
+    def _string_to_tuple(version: str) -> tuple[int, int, *tuple[int, ...]]:
         """
-        Convert a period-separated string to a tuple of integers.
+        Convert a period-separated string to a tuple of integers of at least length 2.
 
         Parameters
         ----------
@@ -497,12 +500,16 @@ class GrantaMIVersion:
 
         Returns
         -------
-        tuple[int, ...]
+        tuple[int, int, *tuple[int, ...]]
             An n-tuple of integers. The number of elements in the tuple depends on the number of elements provided
             in the input.
         """
-        parsed_version = version.split(".")
-        return tuple(int(i) for i in parsed_version)
+        version_seq = version.split(".")
+        if len(version_seq) < 2:
+            raise ValueError(f"Provided version '{version}' is not a valid version string.")
+        version_tuple = tuple(int(i) for i in version_seq)
+        version_typed = cast(tuple[int, int, *tuple[int, ...]], version_tuple)
+        return version_typed
 
     def __str__(self) -> str:
         """
@@ -514,96 +521,3 @@ class GrantaMIVersion:
             The version number as a string.
         """
         return ".".join(str(i) for i in self.version)
-
-    def __eq__(self, other: object) -> bool:
-        """
-        Equality test.
-
-        Parameters
-        ----------
-        other : GrantaMIVersion | tuple[int, ...]
-            The other object to compare.
-
-        Returns
-        -------
-        bool
-            Returns true if the two objects are identical GrantaMIVersion objects, or the other object is a 4-tuple
-            which matches the ``GrantaMIVersion.version`` property.
-        """
-        other_version = self._get_version_from_other(other)
-        return self.version == other_version
-
-    def __lt__(self, other: object) -> bool:
-        """
-        Less-than test.
-
-        Parameters
-        ----------
-        other : GrantaMIVersion | tuple[int, ...]
-            The other object to compare.
-
-        Returns
-        -------
-        bool
-            Compares the object itself if it is a tuple, or the ``version`` property if it is of type GrantaMIVersion.
-            Returns true if this object is less than the other object, using Python tuple comparison rules.
-        """
-        other_version = self._get_version_from_other(other)
-        if other_version is None:
-            raise TypeError(f"Cannot compare GrantaMIVersion with {type(other)}")
-        return self.version < other_version
-
-    def __le__(self, other: object) -> bool:
-        """
-        Less-than-or-equal-to test.
-
-        Parameters
-        ----------
-        other : GrantaMIVersion | tuple[int, ...]
-            The other object to compare.
-
-        Returns
-        -------
-        bool
-            Compares the object itself if it is a tuple, or the ``version`` property if it is of type GrantaMIVersion.
-            Returns true if this object is less than or equal to the other object, using Python tuple comparison rules.
-        """
-        return self < other or self == other
-
-    def __gt__(self, other: object) -> bool:
-        """
-        Greater-than test.
-
-        Parameters
-        ----------
-        other : GrantaMIVersion | tuple[int, ...]
-            The other object to compare.
-
-        Returns
-        -------
-        bool
-            Compares the object itself if it is a tuple, or the ``version`` property if it is of type GrantaMIVersion.
-            Returns true if this object is greater than the other object, using Python tuple comparison rules.
-        """
-        return not self <= other
-
-    @staticmethod
-    def _get_version_from_other(other: Any) -> tuple[int, ...] | None:
-        """
-        Prepare GrantaMIVersion object for comparison dunder methods.
-
-        Parameters
-        ----------
-        other : Any
-            An object provided to a comparison.
-
-        Returns
-        -------
-        tuple[int, ...] | None
-            An n-tuple of ints if object is an n-tuple of ints or a GrantaMIVersion object. None otherwise.
-        """
-        if isinstance(other, tuple) and all(isinstance(i, int) for i in other):
-            return other
-        if isinstance(other, GrantaMIVersion):
-            return other.version
-        return None
