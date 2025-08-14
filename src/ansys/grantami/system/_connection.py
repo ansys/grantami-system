@@ -42,7 +42,7 @@ import requests
 from ansys.grantami.serverapi_openapi.v2026r1 import api, models
 
 from ._logger import logger
-from ._models import ActivityLogFilter, ActivityLogItem, _PagedResult
+from ._models import ActivityItem, ActivityReportFilter, GrantaMIVersion, _PagedResult
 
 PROXY_PATH = "/proxy/v1.svc/mi"
 AUTH_PATH = "/Health/v2.svc"
@@ -50,32 +50,6 @@ API_DEFINITION_PATH = "/swagger/v1/swagger.json"
 GRANTA_APPLICATION_NAME_HEADER = "PyGranta System"
 
 MINIMUM_GRANTA_MI_VERSION = (26, 1)
-
-
-def _get_mi_server_version(client: ApiClient) -> tuple[int, ...]:
-    """
-    Get the Granta MI version as a tuple.
-
-    This method makes direct use of the underlying ``serverapi-openapi`` package.
-    The API methods in this package may change over time, and so this method is expected
-    to grow to support multiple versions of the ``serverapi-openapi`` package.
-
-    Parameters
-    ----------
-    client : :class:`~.RecordListApiClient`
-        Client object.
-
-    Returns
-    -------
-    tuple of int
-        Granta MI version number.
-    """
-    schema_api = api.SchemaApi(client)
-    server_version_response = schema_api.get_version()
-    assert server_version_response.version
-    server_version_elements = server_version_response.version.split(".")
-    server_version = tuple([int(e) for e in server_version_elements])
-    return server_version
 
 
 class SystemApiClient(ApiClient, ABC):
@@ -125,83 +99,100 @@ class SystemApiClient(ApiClient, ABC):
         """Printable representation of the object."""
         return f"<{self.__class__.__name__} url: {self._service_layer_url}>"
 
-    def get_all_activity_logs(self, page_size: Optional[int] = 1000) -> Iterator[ActivityLogItem]:
+    def get_activity_report(self, page_size: Optional[int] = 1000) -> Iterator[ActivityItem]:
         """
-        Get all activity logs from the Granta MI server.
+        Get all activity information from the Granta MI server.
 
         Parameters
         ----------
-        page_size : int | None, optional
-            The page size to use when requesting activity logs. If None, then paging is disabled and the logs will be
-            returned in a single request. Defaults to 1000.
+        page_size : int, optional
+            The number of items to include in a single response. Defaults to 1000.
 
         Returns
         -------
-        Iterator of ActivityLogItem
-            An iterator containing the returned activity log.
+        Iterator of ActivityItem
+            An iterator containing the returned activity information.
 
         Warnings
         --------
-        Activity logs are updated on the Granta MI server at midnight server time. If a paged request is made while the
-        activity logs are being updated, duplicate results may be retrieved from the server.
+        Activity information is updated on the Granta MI server at midnight server time. If a request is made
+        while the activity report is being updated, duplicate results may be retrieved from the server.
 
-        Avoid making paged requests while the server is updating the activity logs.
+        Avoid making requests while the server is updating the activity report.
         """
-        gsa_filter = ActivityLogFilter()
-        return self.get_activity_logs_where(filter_=gsa_filter, page_size=page_size)
+        gsa_filter = ActivityReportFilter()
+        return self.get_activity_report_where(filter_=gsa_filter, page_size=page_size)
 
-    def get_activity_logs_where(
+    def get_activity_report_where(
         self,
-        filter_: ActivityLogFilter,
+        filter_: ActivityReportFilter,
         page_size: Optional[int] = 1000,
-    ) -> Iterator[ActivityLogItem]:
+    ) -> Iterator[ActivityItem]:
         """
-        Get activity logs from the Granta MI server that match a filter.
+        Get activity information from the Granta MI server that matches a filter.
 
         Parameters
         ----------
-        filter_ : ActivityLogFilter
+        filter_ : ActivityReportFilter
             The filter to apply to the request.
         page_size : int | None, optional
-            The page size to use when requesting activity logs. If None, then paging is disabled and the logs will be
-            returned in a single request. Defaults to 1000.
+            The number of items to include in a single response. Defaults to 1000.
 
         Returns
         -------
-        Iterator of ActivityLogItem
-            An iterator containing the returned activity log.
+        Iterator of ActivityItem
+            An iterator containing the returned activity information.
 
         Warnings
         --------
-        Activity logs are updated on the Granta MI server at midnight server time. If a paged request is made while the
-        activity logs are being updated, duplicate results may be retrieved from the server.
+        Activity information is updated on the Granta MI server at midnight server time. If a request is made
+        while the activity report is being updated, duplicate results may be retrieved from the server.
 
-        Avoid making paged requests while the server is updating the activity logs.
+        Avoid making requests while the server is updating the activity report.
         """
-        logger.info("Fetching activity log entries...")
+        logger.info(f"Fetching activity log entries in batches of size {page_size}...")
 
-        if page_size is not None:
-            logger.info(f"Paging options were specified, fetching in batches of size {page_size}...")
+        def get_next_page(
+            client: "SystemApiClient",
+            gsa_filter: models.GsaActivityLogEntriesFilter,
+            page: int,
+        ) -> list[ActivityItem]:
+            """
+            Request the next batch of activity log information from Granta MI.
 
-            def get_next_page(
-                client: "SystemApiClient",
-                gsa_filter: models.GsaActivityLogEntriesFilter,
-                page: int,
-            ) -> list[ActivityLogItem]:
-                _response = client.activity_log_api.get_entries(body=gsa_filter, page_size=page_size, page=page)
-                if _response is None:
-                    raise ValueError("ActivityLogApi.get_entries must not return None")
-                return [ActivityLogItem._from_model(item) for item in _response.entries]
+            Parameters
+            ----------
+            client : SystemApiClient
+                The client to use for the API request.
+            gsa_filter : models.GsaActivityLogEntriesFilter
+                The filter used to restrict the items in the response.
+            page : int
+                The page number to request.
 
-            partial_func = functools.partial(get_next_page, self, filter_._to_model())
-            return _PagedResult(partial_func, ActivityLogItem)
+            Returns
+            -------
+            List of ActivityItem
+                A list containing a page of the activity log.
+            """
+            _response = client.activity_log_api.get_entries(body=gsa_filter, page_size=page_size, page=page)
+            if _response is None:
+                raise ValueError("ActivityLogApi.get_entries must not return None")
+            return [ActivityItem._from_model(item) for item in _response.entries]
 
-        logger.info("No paging options were specified, fetching all results...")
-        gsa_filter = filter_._to_model()
-        response = self.activity_log_api.get_entries(body=gsa_filter)
-        if response is None:
-            raise ValueError("ActivityLogApi.get_entries must not return None")
-        return iter(ActivityLogItem._from_model(item) for item in response.entries)
+        partial_func = functools.partial(get_next_page, self, filter_._to_model())
+        return _PagedResult(partial_func, ActivityItem)
+
+    def get_granta_mi_version(self) -> GrantaMIVersion:
+        """
+        Get the version of Granta MI running on the server.
+
+        Returns
+        -------
+        GrantaMIVersion
+            Granta MI version information.
+        """
+        version = self.schema_api.get_version()
+        return GrantaMIVersion._from_model(version)
 
 
 class Connection(ApiClientFactory):
@@ -326,7 +317,7 @@ class Connection(ApiClientFactory):
             ) from e
 
         try:
-            server_version = _get_mi_server_version(client)
+            server_version = client.get_granta_mi_version()
         except ApiException as e:
             # Currently the server version check returns a 403 for a System Admin-only user
             # Suppress this spurious failure by returning early
@@ -342,9 +333,9 @@ class Connection(ApiClientFactory):
         # earlier versions. This is not necessary now though, because there is no support for
         # versions earlier than 2026 R1.
 
-        if server_version < MINIMUM_GRANTA_MI_VERSION:
+        if server_version.version < MINIMUM_GRANTA_MI_VERSION:
             raise ConnectionError(
                 f"This package requires a more recent Granta MI version. Detected Granta MI server "
-                f"version is {'.'.join([str(e) for e in server_version])}, but this package "
-                f"requires at least {'.'.join([str(e) for e in MINIMUM_GRANTA_MI_VERSION])}."
+                f"version is {server_version}, but this package requires at least "
+                f"{'.'.join([str(e) for e in MINIMUM_GRANTA_MI_VERSION])}."
             )

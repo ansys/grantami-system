@@ -29,6 +29,9 @@ sl_url = os.getenv("TEST_SL_URL", "http://localhost/mi_servicelayer")
 sysadmin_username = os.getenv("TEST_SYSADMIN_USER")
 sysadmin_password = os.getenv("TEST_SYSADMIN_PASS")
 
+read_username = os.getenv("TEST_READ_USER")
+read_password = os.getenv("TEST_READ_PASS")
+
 ci_unit_tests = os.getenv("CI") and not os.getenv("TEST_SL_URL")
 """If tests are running in CI and the TEST_SL_URL environment variable is not populated, we cannot access MI."""
 
@@ -49,7 +52,7 @@ APP_NAME_2 = "app_name_with 😂"
 DB_KEY = "test_db_key"
 START_DATE = date(year=2022, month=5, day=12)
 END_DATE = date(year=2023, month=5, day=12)
-USERNAME = "domain\\test_user"
+USERNAME = r"domain\test_user"
 
 
 def at_midnight(date_: date) -> datetime:

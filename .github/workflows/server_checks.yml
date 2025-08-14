@@ -48,6 +48,10 @@ on:
         required: true
 
       # Test server credentials
+      TEST_SERVER_READ_USER:
+        required: true
+      TEST_SERVER_READ_PASS:
+        required: true
       TEST_SERVER_SYSADMIN_USER:
         required: true
       TEST_SERVER_SYSADMIN_PASS:
@@ -109,8 +113,8 @@ jobs:
           python .github/scripts/check_server.py
         env:
           TEST_SL_URL: ${{ secrets[matrix.server.url] }}
-          TEST_USER: ${{secrets.TEST_SERVER_SYSADMIN_USER}}
-          TEST_PASS: ${{secrets.TEST_SERVER_SYSADMIN_PASS}}
+          TEST_USER: ${{secrets.TEST_SERVER_READ_USER}}
+          TEST_PASS: ${{secrets.TEST_SERVER_READ_PASS}}
 
   integration-tests:
     name: "Integration tests: ${{ matrix.os }}, v${{ matrix.server.version }}"
@@ -156,6 +160,8 @@ jobs:
           TEST_SL_URL: ${{ secrets[matrix.server.url] }}
           TEST_SYSADMIN_USER: ${{secrets.TEST_SERVER_SYSADMIN_USER}}
           TEST_SYSADMIN_PASS: ${{secrets.TEST_SERVER_SYSADMIN_PASS}}
+          TEST_READ_USER: ${{secrets.TEST_SERVER_READ_USER}}
+          TEST_READ_PASS: ${{secrets.TEST_SERVER_READ_PASS}}
 
 
 #      - name: "Upload coverage to Codecov"
