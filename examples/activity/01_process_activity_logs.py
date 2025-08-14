@@ -45,7 +45,7 @@ items = client.get_all_activity_items()
 #
 # Use the `ActivityLogItem.to_dict()` method to create a dictionary for a single item.
 
-rows = [item.to_dict() for item in client.get_all_activity_items()]
+rows = [item.to_dict() for item in items]
 rows[0]
 
 # Now use this data representation to create a dataframe:
@@ -165,3 +165,12 @@ fig.update_xaxes(title="Month", showgrid=True, dtick="M1", tickformat="%b\n%Y")
 fig.update_yaxes(title="Unique user count")
 fig.update_layout(title="Unique users per month, grouped by database", barmode="stack", bargap=0.1)
 fig.show()
+# -
+
+df_readwrite_per_year = pd.pivot_table(
+    data=df_processed,
+    values="username",
+    index=["usage_mode", pd.Grouper(key="activity_date", freq="YS")],
+    aggfunc=lambda x: x.nunique(),
+)
+df_readwrite_per_year.head()
