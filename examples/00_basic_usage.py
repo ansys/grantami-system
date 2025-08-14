@@ -42,24 +42,26 @@ client = connection.connect()
 # * The time an activity occurred
 # * Who performed the activity
 # * The MI application and database that were used
-# * Whether this was a Read activity, or an Edit activity
+# * Whether this was a read or edit activity
 #
-# Use the ``SystemApiClient.get_all_activity_items()`` method to access the report as an iterator of ``ActivityLogItem``
+# Use the ``SystemApiClient.get_activity_report()`` method to access the report as an iterator of ``ActivityItem``
 # objects.
 
-items = client.get_all_activity_items()
+items = client.get_activity_report()
 item = next(items)
 print(item)
-
-# For more information about activity reporting information, including how to filter the reports, see the examples.
 
 # ## Access Granta MI version information
 # The Granta MI version can be accessed with the ``SystemApiClient.get_granta_mi_version()`` method.
 
-version = client.get_granta_mi_version()
-print(version)
+mi_version = client.get_granta_mi_version()
+print(mi_version)
 
-# The resulting object supports tuple-style version comparisons.
+# The `.version` property is a tuple, and can be compared with a minimum required version
+# using the `>` operator.
 
 minimum_version = (25, 2)
-print(f"Does version meet minimum requirement? {version > minimum_version}")
+if mi_version.version > minimum_version:
+    print("Granta MI version meets minimum requirements")
+else:
+    print("Granta MI version does not meet minimum requirements")
