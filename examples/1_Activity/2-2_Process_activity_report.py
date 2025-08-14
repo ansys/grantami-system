@@ -28,7 +28,7 @@
 
 # Import the ``Connection`` class, create the connection, and fetch the activity report for the
 # 12 months between July 2024 and June 2025. For more information, see the
-# [Basic Usage](../00_Basic_usage.ipynb) and [Access an activity report](00_access_activity_log.ipynb)
+# [Basic Usage](../1_Basic_usage.ipynb) and [Access an activity report](2-1_Access_activity_report.ipynb)
 # examples.
 
 # +

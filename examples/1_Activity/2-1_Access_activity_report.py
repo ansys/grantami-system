@@ -21,7 +21,7 @@
 # ## Connect to Granta MI
 
 # Import the ``Connection`` class and create the connection. For more information, see the
-# [Basic Usage](../00_Basic_usage.ipynb) example.
+# [Basic Usage](../1_Basic_usage.ipynb) example.
 
 # +
 from ansys.grantami.system import Connection
