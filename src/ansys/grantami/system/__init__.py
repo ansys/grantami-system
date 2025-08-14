@@ -25,13 +25,13 @@
 import importlib.metadata as importlib_metadata
 
 from ._connection import Connection, SystemApiClient
-from ._models import ActivityLogFilter, ActivityLogItem, ActivityUsageMode, GrantaMIVersion
+from ._models import ActivityItem, ActivityReportFilter, ActivityUsageMode, GrantaMIVersion
 
 __all__ = [
     "Connection",
     "SystemApiClient",
-    "ActivityLogFilter",
-    "ActivityLogItem",
+    "ActivityReportFilter",
+    "ActivityItem",
     "ActivityUsageMode",
     "GrantaMIVersion",
 ]

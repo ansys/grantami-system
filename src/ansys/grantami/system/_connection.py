@@ -42,7 +42,7 @@ import requests
 from ansys.grantami.serverapi_openapi.v2026r1 import api, models
 
 from ._logger import logger
-from ._models import ActivityLogFilter, ActivityLogItem, GrantaMIVersion, _PagedResult
+from ._models import ActivityItem, ActivityReportFilter, GrantaMIVersion, _PagedResult
 
 PROXY_PATH = "/proxy/v1.svc/mi"
 AUTH_PATH = "/Health/v2.svc"
@@ -99,9 +99,9 @@ class SystemApiClient(ApiClient, ABC):
         """Printable representation of the object."""
         return f"<{self.__class__.__name__} url: {self._service_layer_url}>"
 
-    def get_all_activity_logs(self, page_size: Optional[int] = 1000) -> Iterator[ActivityLogItem]:
+    def get_activity_report(self, page_size: Optional[int] = 1000) -> Iterator[ActivityItem]:
         """
-        Get all activity logs from the Granta MI server.
+        Get all activity information from the Granta MI server.
 
         Parameters
         ----------
@@ -110,45 +110,45 @@ class SystemApiClient(ApiClient, ABC):
 
         Returns
         -------
-        Iterator of ActivityLogItem
-            An iterator containing the returned activity log.
+        Iterator of ActivityItem
+            An iterator containing the returned activity information.
 
         Warnings
         --------
-        Activity logs are updated on the Granta MI server at midnight server time. If a request is made while the
-        activity logs are being updated, duplicate results may be retrieved from the server.
+        Activity information is updated on the Granta MI server at midnight server time. If a request is made
+        while the activity report is being updated, duplicate results may be retrieved from the server.
 
-        Avoid making requests while the server is updating the activity logs.
+        Avoid making requests while the server is updating the activity report.
         """
-        gsa_filter = ActivityLogFilter()
-        return self.get_activity_logs_where(filter_=gsa_filter, page_size=page_size)
+        gsa_filter = ActivityReportFilter()
+        return self.get_activity_report_where(filter_=gsa_filter, page_size=page_size)
 
-    def get_activity_logs_where(
+    def get_activity_report_where(
         self,
-        filter_: ActivityLogFilter,
+        filter_: ActivityReportFilter,
         page_size: Optional[int] = 1000,
-    ) -> Iterator[ActivityLogItem]:
+    ) -> Iterator[ActivityItem]:
         """
-        Get activity logs from the Granta MI server that match a filter.
+        Get activity information from the Granta MI server that matches a filter.
 
         Parameters
         ----------
-        filter_ : ActivityLogFilter
+        filter_ : ActivityReportFilter
             The filter to apply to the request.
         page_size : int | None, optional
-            The page size to use when requesting activity logs. Defaults to 1000.
+            The number of items to include in a single response. Defaults to 1000.
 
         Returns
         -------
-        Iterator of ActivityLogItem
-            An iterator containing the returned activity log.
+        Iterator of ActivityItem
+            An iterator containing the returned activity information.
 
         Warnings
         --------
-        Activity logs are updated on the Granta MI server at midnight server time. If a request is made while the
-        activity logs are being updated, duplicate results may be retrieved from the server.
+        Activity information is updated on the Granta MI server at midnight server time. If a request is made
+        while the activity report is being updated, duplicate results may be retrieved from the server.
 
-        Avoid making requests while the server is updating the activity logs.
+        Avoid making requests while the server is updating the activity report.
         """
         logger.info(f"Fetching activity log entries in batches of size {page_size}...")
 
@@ -156,7 +156,7 @@ class SystemApiClient(ApiClient, ABC):
             client: "SystemApiClient",
             gsa_filter: models.GsaActivityLogEntriesFilter,
             page: int,
-        ) -> list[ActivityLogItem]:
+        ) -> list[ActivityItem]:
             """
             Request the next batch of activity log information from Granta MI.
 
@@ -171,16 +171,16 @@ class SystemApiClient(ApiClient, ABC):
 
             Returns
             -------
-            List of ActivityLogItem
+            List of ActivityItem
                 A list containing a page of the activity log.
             """
             _response = client.activity_log_api.get_entries(body=gsa_filter, page_size=page_size, page=page)
             if _response is None:
                 raise ValueError("ActivityLogApi.get_entries must not return None")
-            return [ActivityLogItem._from_model(item) for item in _response.entries]
+            return [ActivityItem._from_model(item) for item in _response.entries]
 
         partial_func = functools.partial(get_next_page, self, filter_._to_model())
-        return _PagedResult(partial_func, ActivityLogItem)
+        return _PagedResult(partial_func, ActivityItem)
 
     def get_granta_mi_version(self) -> GrantaMIVersion:
         """
