@@ -24,7 +24,7 @@ from typing import Any, Iterator, List, Type
 
 import pytest
 
-from ansys.grantami.system._models import ActivityLogItem, _PagedResult
+from ansys.grantami.system._models import ActivityItem, _PagedResult
 
 
 class TestPagedResult:
@@ -35,7 +35,7 @@ class TestPagedResult:
             (str, "str"),
             (bool, "bool"),
             (float, "float"),
-            (ActivityLogItem, "ActivityLogItem"),
+            (ActivityItem, "ActivityItem"),
         ],
     )
     @pytest.mark.parametrize("page_index", [1, 10, 100, 1000])

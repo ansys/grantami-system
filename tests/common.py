@@ -29,6 +29,9 @@ sl_url = os.getenv("TEST_SL_URL", "http://localhost/mi_servicelayer")
 sysadmin_username = os.getenv("TEST_SYSADMIN_USER")
 sysadmin_password = os.getenv("TEST_SYSADMIN_PASS")
 
+read_username = os.getenv("TEST_READ_USER")
+read_password = os.getenv("TEST_READ_PASS")
+
 ci_unit_tests = os.getenv("CI") and not os.getenv("TEST_SL_URL")
 """If tests are running in CI and the TEST_SL_URL environment variable is not populated, we cannot access MI."""
 

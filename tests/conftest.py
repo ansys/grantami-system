@@ -25,6 +25,8 @@ import requests_mock
 
 from .common import (
     _get_connection,
+    read_password,
+    read_username,
     sl_url,
     sysadmin_password,
     sysadmin_username,
@@ -32,8 +34,13 @@ from .common import (
 
 
 @pytest.fixture
-def connection():
+def connection_sysadmin():
     return _get_connection(sl_url, sysadmin_username, sysadmin_password)
+
+
+@pytest.fixture
+def connection_read():
+    return _get_connection(sl_url, read_username, read_password)
 
 
 def pytest_addoption(parser):
