@@ -19,6 +19,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import copy
+
 import pytest
 
 from ansys.grantami.serverapi_openapi.v2026r1.models import (
@@ -26,8 +28,9 @@ from ansys.grantami.serverapi_openapi.v2026r1.models import (
     GsaActivityLogEntry,
     GsaActivityLogMatchType,
     GsaActivityLogUsageMode,
+    GsaMiVersion,
 )
-from ansys.grantami.system._models import ActivityLogFilter, ActivityLogItem, ActivityUsageMode
+from ansys.grantami.system._models import ActivityLogFilter, ActivityLogItem, ActivityUsageMode, GrantaMIVersion
 
 from .activity_log_filter_parameters import get_parameters
 from .common import APP_NAME_1, APP_NAME_2, DB_KEY, START_DATE, USERNAME, at_midnight
@@ -162,3 +165,57 @@ class TestActivityLogItem:
         assert item.usage_mode == ActivityUsageMode.VIEW
         assert item.activity_date == START_DATE
         assert set(item.application_names) == {APP_NAME_2}
+
+
+class TestVersion:
+    version = GrantaMIVersion(
+        version=(28, 1, 19652, 353),
+        binary_compatibility_version="28.1.0.0",
+    )
+    compatible_version = GrantaMIVersion(
+        version=(28, 1, 19652, 378),
+        binary_compatibility_version="28.1.0.0",
+    )
+    valid_model = GsaMiVersion(version="27.1.123.456", binary_compatibility_version="27.1.0.0")
+    valid_model_long = GsaMiVersion(
+        version="24.2.123.456.789.1.2.3.5.7.6.1",
+        binary_compatibility_version="24.2.123.456.0.0.0.0.0.0.0.0",
+    )
+    invalid_model_comma_separated = GsaMiVersion(version="25,8", binary_compatibility_version="25,8,0,0")
+    invalid_model_empty_string = GsaMiVersion(version="", binary_compatibility_version="")
+
+    def test_repr(self):
+        expected_repr = "GrantaMIVersion(version=(28, 1, 19652, 353), binary_compatibility_version='28.1.0.0')"
+        assert repr(self.version) == expected_repr
+
+    def test_str(self):
+        assert str(self.version) == "28.1.19652.353"
+
+    def test_eq(self):
+        assert self.version == copy.copy(self.version)
+
+    def test_neq(self):
+        assert self.version != copy.copy(self.compatible_version)
+
+    def test_compatible(self):
+        assert self.version.binary_compatibility_version == self.compatible_version.binary_compatibility_version
+
+    def test_instantiate_from_model(self):
+        version = GrantaMIVersion._from_model(self.valid_model)
+        assert version.version == (27, 1, 123, 456)
+        assert version.major_minor_version == (27, 1)
+        assert version.binary_compatibility_version == "27.1.0.0"
+
+    def test_instantiate_from_model_long(self):
+        version = GrantaMIVersion._from_model(self.valid_model_long)
+        assert version.version == (24, 2, 123, 456, 789, 1, 2, 3, 5, 7, 6, 1)
+        assert version.major_minor_version == (24, 2)
+        assert version.binary_compatibility_version == "24.2.123.456.0.0.0.0.0.0.0.0"
+
+    def test_instantiate_from_invalid_model_raises_value_error(self):
+        with pytest.raises(ValueError, match="'25,8' is not a valid version string"):
+            GrantaMIVersion._from_model(self.invalid_model_comma_separated)
+
+    def test_instantiate_from_empty_string_model_raises_value_error(self):
+        with pytest.raises(ValueError, match="'' is not a valid version string"):
+            GrantaMIVersion._from_model(self.invalid_model_empty_string)

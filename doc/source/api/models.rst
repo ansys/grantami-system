@@ -15,3 +15,6 @@ Activity log
 .. autoclass:: ansys.grantami.system.ActivityUsageMode(value)
    :members:
    :undoc-members:
+
+.. autoclass:: ansys.grantami.system.GrantaMIVersion
+   :members:

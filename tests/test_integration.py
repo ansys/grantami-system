@@ -51,8 +51,8 @@ def _validate_activity_log_item(item: ActivityLogItem, additional_checks: dict =
         assert getattr(item, attr_name) == value
 
 
-def test_get_activity_log(connection):
-    activity_log = connection.get_all_activity_logs(page_size=None)
+def test_get_activity_log(connection_sysadmin):
+    activity_log = connection_sysadmin.get_all_activity_logs(page_size=None)
     item = next(activity_log)
     _validate_activity_log_item(item)
     item = next(activity_log)
@@ -60,24 +60,31 @@ def test_get_activity_log(connection):
 
 
 @pytest.mark.parametrize("page_size", [1, 2, 5, 10, 100])
-def test_get_activity_log_paged(connection, page_size):
-    activity_log = connection.get_all_activity_logs(page_size=page_size)
+def test_get_activity_log_paged(connection_sysadmin, page_size):
+    activity_log = connection_sysadmin.get_all_activity_logs(page_size=page_size)
     for _ in range(page_size):
         next(activity_log)
     item = next(activity_log)
     _validate_activity_log_item(item)
 
 
-def test_get_activity_log_no_database(connection):
+def test_get_activity_log_no_database(connection_sysadmin):
     no_database_filter = ActivityLogFilter().with_database_key(None)
-    activity_log = connection.get_activity_logs_where(no_database_filter)
+    activity_log = connection_sysadmin.get_activity_logs_where(no_database_filter)
     item = next(activity_log)
     _validate_activity_log_item(item, additional_checks={"database_key": None})
 
 
 @pytest.mark.parametrize("usage_mode", [ActivityUsageMode.EDIT, ActivityUsageMode.VIEW])
-def test_get_activity_log_by_usage_mode(connection, usage_mode):
+def test_get_activity_log_by_usage_mode(connection_sysadmin, usage_mode):
     no_database_filter = ActivityLogFilter().with_usage_mode(usage_mode)
-    activity_log = connection.get_activity_logs_where(no_database_filter)
+    activity_log = connection_sysadmin.get_activity_logs_where(no_database_filter)
     item = next(activity_log)
     _validate_activity_log_item(item, additional_checks={"usage_mode": usage_mode})
+
+
+def test_get_server_version(connection_read):
+    version = connection_read.get_granta_mi_version()
+    assert version.major_minor_version
+    assert version.version
+    assert version.binary_compatibility_version
