@@ -21,5 +21,6 @@ These examples show how to access and process activity report information.
 
        2-1_Access_activity_report
        2-2_Process_activity_report
+       2-3_Anonymize_activity_report
 
     {% endif %}
