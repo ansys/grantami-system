@@ -51,17 +51,9 @@ def _validate_activity_log_item(item: ActivityItem, additional_checks: dict = No
         assert getattr(item, attr_name) == value
 
 
-def test_get_activity_log(connection_sysadmin):
-    activity_log = connection_sysadmin.get_activity_report(page_size=None)
-    item = next(activity_log)
-    _validate_activity_log_item(item)
-    item = next(activity_log)
-    _validate_activity_log_item(item)
-
-
 @pytest.mark.parametrize("page_size", [1, 2, 5, 10, 100])
 def test_get_activity_log_paged(connection_sysadmin, page_size):
-    activity_log = connection_sysadmin.get_activity_report_where(page_size=page_size)
+    activity_log = connection_sysadmin.get_activity_report(page_size=page_size)
     for _ in range(page_size):
         next(activity_log)
     item = next(activity_log)
@@ -77,8 +69,8 @@ def test_get_activity_log_no_database(connection_sysadmin):
 
 @pytest.mark.parametrize("usage_mode", [ActivityUsageMode.EDIT, ActivityUsageMode.VIEW])
 def test_get_activity_log_by_usage_mode(connection_sysadmin, usage_mode):
-    no_database_filter = ActivityReportFilter().with_usage_mode(usage_mode)
-    activity_log = connection_sysadmin.get_activity_report_where(no_database_filter)
+    usage_mode_filter = ActivityReportFilter().with_usage_mode(usage_mode)
+    activity_log = connection_sysadmin.get_activity_report_where(usage_mode_filter)
     item = next(activity_log)
     _validate_activity_log_item(item, additional_checks={"usage_mode": usage_mode})
 
