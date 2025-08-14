@@ -21,9 +21,12 @@
 # SOFTWARE.
 """Models module."""
 
+from dataclasses import dataclass
 from datetime import date, datetime
 from enum import Enum
-from typing import Callable, Iterator, Optional, Self, Type, TypeVar
+from typing import Callable, Iterator, Optional, Self, Type, TypeVar, cast
+
+from ansys.openapi.common import Unset_Type
 
 from ansys.grantami.serverapi_openapi.v2026r1 import models
 
@@ -34,46 +37,46 @@ class ActivityUsageMode(Enum):
     """
     Usage modes for an activity.
 
-    Can be used in :meth:`ActivityLogFilter.with_usage_mode`.
+    Can be used in :meth:`ActivityReportFilter.with_usage_mode`.
     """
 
     VIEW = models.GsaActivityLogUsageMode.VIEW.value
     EDIT = models.GsaActivityLogUsageMode.EDIT.value
 
 
-class ActivityLogFilter:
+class ActivityReportFilter:
     r"""
-    Builder class to create an activity log filter for use with :meth:`~.SystemApiClient.get_activity_logs_where`.
+    Builder class to create an activity report filter for use with :meth:`~.SystemApiClient.get_activity_report_where`.
 
     All text-based fields are always case-insensitive.
 
     Examples
     --------
-    >>> # Activity logs for this library
-    >>> pygranta_system_filter = ActivityLogFilter().with_application_name("PyGranta System")
-    >>> client.get_activity_logs_where(pygranta_system_filter)
+    >>> # Activity report for this library only
+    >>> pygranta_system_filter = ActivityReportFilter().with_application_name("PyGranta System")
+    >>> client.get_activity_report_where(pygranta_system_filter)
 
-    >>> # Activity logs relating to the MI_Training database
-    >>> mi_training_filter = ActivityLogFilter().with_database_key("MI_Training", exact_match=True)
-    >>> client.get_activity_logs_where(mi_training_filter)
+    >>> # Activity report relating to the MI_Training database
+    >>> mi_training_filter = ActivityReportFilter().with_database_key("MI_Training", exact_match=True)
+    >>> client.get_activity_report_where(mi_training_filter)
 
-    >>> # Activity logs for a domain user
-    >>> domain_user_filter = ActivityLogFilter().with_username("DOMAIN\\user", exact_match=True)
-    >>> client.get_activity_logs_where(domain_user_filter)
+    >>> # Activity report for a domain user
+    >>> domain_user_filter = ActivityReportFilter().with_username("DOMAIN\\user", exact_match=True)
+    >>> client.get_activity_report_where(domain_user_filter)
 
-    >>> # Activity logs for edit operations using MI Training database using MI Scripting Toolkit, made last month
+    >>> # Activity report for edit operations using MI Training database using MI Scripting Toolkit, made last month
     >>> first_of_this_month = datetime.date.today().replace(day=1)
     >>> last_of_last_month = first_of_this_month - datetime.timedelta(days=1)
     >>> first_of_last_month = last_of_last_month.replace(day=1)
     >>> combination_filter = (
-    ...     ActivityLogFilter()
+    ...     ActivityReportFilter()
     ...     .with_application_name("Scripting Toolkit")
     ...     .with_database_key("MI_Training")
     ...     .with_usage_mode(ActivityUsageMode.EDIT)
     ...     .with_date_from(first_of_last_month, inclusive=True)
     ...     .with_date_to(last_of_last_month, inclusive=True)
     ... )
-    >>> view_filter.get_activity_logs_where(combination_filter)
+    >>> view_filter.get_activity_report_where(combination_filter)
     """
 
     def __init__(self) -> None:
@@ -109,8 +112,8 @@ class ActivityLogFilter:
 
         Returns
         -------
-        ActivityLogFilter
-            The current :class:`.ActivityLogFilter` object.
+        ActivityReportFilter
+            The current :class:`.ActivityReportFilter` object.
         """
         # TODO: Think about discovery of application names
 
@@ -139,8 +142,8 @@ class ActivityLogFilter:
 
         Returns
         -------
-        ActivityLogFilter
-            The current :class:`.ActivityLogFilter` object.
+        ActivityReportFilter
+            The current :class:`.ActivityReportFilter` object.
         """
         self._application_names_collection_filter = models.GsaActivityLogApplicationNamesCollectionFilter(
             application_names_to_match=application_names,
@@ -167,8 +170,8 @@ class ActivityLogFilter:
 
         Returns
         -------
-        ActivityLogFilter
-            The current :class:`.ActivityLogFilter` object.
+        ActivityReportFilter
+            The current :class:`.ActivityReportFilter` object.
         """
         self._database_key_filter = models.GsaActivityLogDatabaseKeyFilter(
             database_key_to_match=database_key,
@@ -192,8 +195,8 @@ class ActivityLogFilter:
 
         Returns
         -------
-        ActivityLogFilter
-            The current :class:`.ActivityLogFilter` object.
+        ActivityReportFilter
+            The current :class:`.ActivityReportFilter` object.
         """
         self._date_from = datetime.combine(date_from, datetime.min.time(), tzinfo=None)
         self._date_from_inclusive = inclusive
@@ -213,8 +216,8 @@ class ActivityLogFilter:
 
         Returns
         -------
-        ActivityLogFilter
-            The current :class:`.ActivityLogFilter` object.
+        ActivityReportFilter
+            The current :class:`.ActivityReportFilter` object.
         """
         self._date_to = datetime.combine(date_to, datetime.min.time(), tzinfo=None)
         self._date_to_inclusive = inclusive
@@ -231,8 +234,8 @@ class ActivityLogFilter:
 
         Returns
         -------
-        ActivityLogFilter
-            The current :class:`.ActivityLogFilter` object.
+        ActivityReportFilter
+            The current :class:`.ActivityReportFilter` object.
         """
         mode = models.GsaActivityLogUsageMode(usage_mode.value)
         self._usage_mode_filter = models.GsaActivityLogUsageModeFilter(usage_mode_to_match=mode)
@@ -252,8 +255,8 @@ class ActivityLogFilter:
 
         Returns
         -------
-        ActivityLogFilter
-            The current :class:`.ActivityLogFilter` object.
+        ActivityReportFilter
+            The current :class:`.ActivityReportFilter` object.
         """
         self._username_filter = models.GsaActivityLogUsernameFilter(
             username_to_match=username,
@@ -297,73 +300,30 @@ class ActivityLogFilter:
         return model
 
 
-class ActivityLogItem:
+@dataclass(frozen=True)
+class ActivityItem:
     """
-    Describes an activity log item as obtained from the API.
+    Describes an activity report item as obtained from the API.
 
-    Read-only - do not directly instantiate or modify instances of this class.
-
-    Other Parameters
-    ----------------
-    activity_date : datetime.date
-        The date on which the activity occurred.
-    application_names : list of str
-        The application or applications used in the activity.
-    username : str
-        The user who performed the activity.
-    usage_mode : ActivityUsageMode
-        The usage mode associated with the activity.
-    database_key : str, optional
-        The database key used in the activity.
+    Read-only dataclass - do not directly instantiate or modify instances of this class.
     """
 
-    def __init__(
-        self,
-        activity_date: date,
-        application_names: list[str],
-        username: str,
-        usage_mode: ActivityUsageMode,
-        database_key: Optional[str],
-    ) -> None:
-        self.activity_date = activity_date
-        self.application_names = application_names
-        self.username = username
-        self.usage_mode = usage_mode
-        self.database_key = database_key
-
-    def __repr__(self) -> str:
-        """Printable representation of the object."""
-        database_key = f'"{self.database_key}"' if self.database_key else "None"
-        repr = (
-            f'<{self.__class__.__name__} activity_date={self.activity_date}, username="{self.username}", '
-            f"database_key={database_key}, usage_mode={self.usage_mode}>"
-        )
-        return repr
-
-    def to_dict(self) -> dict[str, date | str | ActivityUsageMode | list[str] | None]:
-        """
-        Return a dictionary representation of the object.
-
-        Can be used to create a DataFrame.
-
-        Returns
-        -------
-        dict[str, date | str | ActivityUsageMode | list[str] | None]
-            The object represented as a dictionary. Each key-value pair corresponds to a public attribute of the object.
-        """
-        return {
-            "database_key": self.database_key,
-            "usage_mode": self.usage_mode,
-            "application_names": self.application_names,
-            "activity_date": self.activity_date,
-            "username": self.username,
-        }
+    activity_date: date
+    """The date on which the activity occurred."""
+    application_names: list[str]
+    """The application or applications used in the activity."""
+    username: str
+    """The user who performed the activity."""
+    usage_mode: ActivityUsageMode
+    """The usage mode associated with the activity."""
+    database_key: Optional[str]
+    """The database key used in the activity."""
 
     @classmethod
     def _from_model(
         cls,
         model: models.GsaActivityLogEntry,
-    ) -> "ActivityLogItem":
+    ) -> "ActivityItem":
         """
         Instantiate from a model defined in the auto-generated client code.
 
@@ -374,7 +334,7 @@ class ActivityLogItem:
 
         Returns
         -------
-        ActivityLogItem
+        ActivityItem
             The instantiated object.
         """
         logger.debug("Deserializing ActivityLogItem from API response")
@@ -388,32 +348,13 @@ class ActivityLogItem:
             database_key=model.database_key if model.database_key else None,
         )
 
-    def to_dict(self) -> dict[str, date | str | ActivityUsageMode | list[str] | None]:
-        """
-        Return a dictionary representation of the object.
-
-        Can be used to create a DataFrame.
-
-        Returns
-        -------
-        dict[str, date | str | ActivityUsageMode | list[str] | None]
-            The object represented as a dictionary. Each key-value pair corresponds to a public attribute of the object.
-        """
-        return {
-            "database_key": self.database_key,
-            "usage_mode": self.usage_mode,
-            "application_names": self.application_names,
-            "activity_date": self.activity_date,
-            "username": self.username,
-        }
-
 
 T = TypeVar("T")
 
 
 class _PagedResult(Iterator[T]):
     """
-    Object representing the result of a search. Generic subclass of an iterator.
+    Object representing the result of a paged request. Generic subclass of an iterator.
 
     The individual results are obtained by iterating over this object. The results will be
     fetched from the API as and when they are needed.
@@ -476,3 +417,83 @@ class _PagedResult(Iterator[T]):
             self._current_page = iter(next_page)
 
         return next(self._current_page)
+
+
+@dataclass(frozen=True)
+class GrantaMIVersion:
+    """Information about a Granta MI version."""
+
+    version: tuple[int, int, *tuple[int, ...]]
+    """The full version number as a n-tuple of integers, where n >= 2."""
+
+    binary_compatibility_version: str
+    """The binary compatibility version."""
+
+    @property
+    def major_minor_version(self) -> tuple[int, int]:
+        """
+        The Granta MI version as a 2-tuple of integers. Used to determine API compatibility between versions.
+
+        Returns
+        -------
+        tuple of int
+            The major-minor version as a 2-tuple of ints.
+        """
+        return self.version[:2]
+
+    @classmethod
+    def _from_model(cls, model: models.GsaMiVersion) -> "GrantaMIVersion":
+        """
+        Instantiate from a model defined in the auto-generated client code.
+
+        Parameters
+        ----------
+        model : models.GsaMiVersion
+            DTO object to parse.
+
+        Returns
+        -------
+        GrantaMIVersion
+            The instantiated object.
+        """
+        if isinstance(model.version, Unset_Type):
+            raise TypeError("Property 'version' must not be 'Unset'.")
+        version = cls._string_to_tuple(model.version)
+        if isinstance(model.binary_compatibility_version, Unset_Type):
+            raise TypeError("Property 'binary_compatibility_version' must not be 'Unset'.")
+        result = cls(version=version, binary_compatibility_version=model.binary_compatibility_version)
+        return result
+
+    @staticmethod
+    def _string_to_tuple(version: str) -> tuple[int, int, *tuple[int, ...]]:
+        """
+        Convert a period-separated string to a tuple of integers of at least length 2.
+
+        Parameters
+        ----------
+        version : str
+            A version number described as a period-separated string, e.g. "25.2.1326.0".
+
+        Returns
+        -------
+        tuple[int, int, *tuple[int, ...]]
+            An n-tuple of integers. The number of elements in the tuple depends on the number of elements provided
+            in the input.
+        """
+        version_seq = version.split(".")
+        if len(version_seq) < 2:
+            raise ValueError(f"Provided version '{version}' is not a valid version string.")
+        version_tuple = tuple(int(i) for i in version_seq)
+        version_typed = cast(tuple[int, int, *tuple[int, ...]], version_tuple)
+        return version_typed
+
+    def __str__(self) -> str:
+        """
+        Version number as a period-separated string.
+
+        Returns
+        -------
+        str
+            The version number as a string.
+        """
+        return ".".join(str(i) for i in self.version)
