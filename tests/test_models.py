@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import copy
+from dataclasses import asdict
 
 import pytest
 
@@ -127,15 +128,17 @@ class TestActivityLogItem:
 
     def test_repr_with_db_key(self):
         expected_repr = (
-            '<ActivityItem activity_date=2022-05-12, username="domain\\test_user", database_key="test_db_key", '
-            "usage_mode=ActivityUsageMode.EDIT>"
+            "ActivityItem(activity_date=datetime.date(2022, 5, 12), application_names=['test_app_name', "
+            r"'app_name_with 😂'], username='domain\\test_user', usage_mode=<ActivityUsageMode.EDIT: 'edit'>, "
+            "database_key='test_db_key')"
         )
         assert repr(self.item_with_db_key) == expected_repr
 
     def test_repr_without_db_key(self):
         expected_repr = (
-            '<ActivityItem activity_date=2022-05-12, username="domain\\test_user", database_key=None, '
-            "usage_mode=ActivityUsageMode.EDIT>"
+            "ActivityItem(activity_date=datetime.date(2022, 5, 12), application_names=['test_app_name', "
+            r"'app_name_with 😂'], username='domain\\test_user', usage_mode=<ActivityUsageMode.EDIT: 'edit'>, "
+            "database_key=None)"
         )
         assert repr(self.item_without_db_key) == expected_repr
 
@@ -165,6 +168,26 @@ class TestActivityLogItem:
         assert item.usage_mode == ActivityUsageMode.VIEW
         assert item.activity_date == START_DATE
         assert set(item.application_names) == {APP_NAME_2}
+
+    def test_model_to_dict_with_db_key(self):
+        dict_representation = asdict(self.item_with_db_key)
+        assert dict_representation == dict(
+            activity_date=START_DATE,
+            application_names=[APP_NAME_1, APP_NAME_2],
+            username=USERNAME,
+            usage_mode=ActivityUsageMode.EDIT,
+            database_key=DB_KEY,
+        )
+
+    def test_model_to_dict_without_db_key(self):
+        dict_representation = asdict(self.item_without_db_key)
+        assert dict_representation == dict(
+            activity_date=START_DATE,
+            application_names=[APP_NAME_1, APP_NAME_2],
+            username=USERNAME,
+            usage_mode=ActivityUsageMode.EDIT,
+            database_key=None,
+        )
 
 
 class TestVersion:
