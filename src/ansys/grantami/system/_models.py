@@ -21,9 +21,12 @@
 # SOFTWARE.
 """Models module."""
 
+from dataclasses import dataclass
 from datetime import date, datetime
 from enum import Enum
-from typing import Callable, Iterator, Optional, Self, Type, TypeVar
+from typing import Callable, Iterator, Optional, Self, Type, TypeVar, cast
+
+from ansys.openapi.common import Unset_Type
 
 from ansys.grantami.serverapi_openapi.v2026r1 import models
 
@@ -438,3 +441,83 @@ class _PagedResult(Iterator[T]):
             self._current_page = iter(next_page)
 
         return next(self._current_page)
+
+
+@dataclass(frozen=True)
+class GrantaMIVersion:
+    """Information about a Granta MI version."""
+
+    version: tuple[int, int, *tuple[int, ...]]
+    """The full version number as a n-tuple of integers, where n >= 2."""
+
+    binary_compatibility_version: str
+    """The binary compatibility version."""
+
+    @property
+    def major_minor_version(self) -> tuple[int, int]:
+        """
+        The Granta MI version as a 2-tuple of integers. Used to determine API compatibility between versions.
+
+        Returns
+        -------
+        tuple of int
+            The major-minor version as a 2-tuple of ints.
+        """
+        return self.version[:2]
+
+    @classmethod
+    def _from_model(cls, model: models.GsaMiVersion) -> "GrantaMIVersion":
+        """
+        Instantiate from a model defined in the auto-generated client code.
+
+        Parameters
+        ----------
+        model : models.GsaMiVersion
+            DTO object to parse.
+
+        Returns
+        -------
+        GrantaMIVersion
+            The instantiated object.
+        """
+        if isinstance(model.version, Unset_Type):
+            raise TypeError("Property 'version' must not be 'Unset'.")
+        version = cls._string_to_tuple(model.version)
+        if isinstance(model.binary_compatibility_version, Unset_Type):
+            raise TypeError("Property 'binary_compatibility_version' must not be 'Unset'.")
+        result = cls(version=version, binary_compatibility_version=model.binary_compatibility_version)
+        return result
+
+    @staticmethod
+    def _string_to_tuple(version: str) -> tuple[int, int, *tuple[int, ...]]:
+        """
+        Convert a period-separated string to a tuple of integers of at least length 2.
+
+        Parameters
+        ----------
+        version : str
+            A version number described as a period-separated string, e.g. "25.2.1326.0".
+
+        Returns
+        -------
+        tuple[int, int, *tuple[int, ...]]
+            An n-tuple of integers. The number of elements in the tuple depends on the number of elements provided
+            in the input.
+        """
+        version_seq = version.split(".")
+        if len(version_seq) < 2:
+            raise ValueError(f"Provided version '{version}' is not a valid version string.")
+        version_tuple = tuple(int(i) for i in version_seq)
+        version_typed = cast(tuple[int, int, *tuple[int, ...]], version_tuple)
+        return version_typed
+
+    def __str__(self) -> str:
+        """
+        Version number as a period-separated string.
+
+        Returns
+        -------
+        str
+            The version number as a string.
+        """
+        return ".".join(str(i) for i in self.version)

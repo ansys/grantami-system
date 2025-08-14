@@ -42,7 +42,7 @@ import requests
 from ansys.grantami.serverapi_openapi.v2026r1 import api, models
 
 from ._logger import logger
-from ._models import ActivityItem, ActivityReportFilter, _PagedResult
+from ._models import ActivityItem, ActivityReportFilter, GrantaMIVersion, _PagedResult
 
 PROXY_PATH = "/proxy/v1.svc/mi"
 AUTH_PATH = "/Health/v2.svc"
@@ -50,32 +50,6 @@ API_DEFINITION_PATH = "/swagger/v1/swagger.json"
 GRANTA_APPLICATION_NAME_HEADER = "PyGranta System"
 
 MINIMUM_GRANTA_MI_VERSION = (26, 1)
-
-
-def _get_mi_server_version(client: ApiClient) -> tuple[int, ...]:
-    """
-    Get the Granta MI version as a tuple.
-
-    This method makes direct use of the underlying ``serverapi-openapi`` package.
-    The API methods in this package may change over time, and so this method is expected
-    to grow to support multiple versions of the ``serverapi-openapi`` package.
-
-    Parameters
-    ----------
-    client : :class:`~.RecordListApiClient`
-        Client object.
-
-    Returns
-    -------
-    tuple of int
-        Granta MI version number.
-    """
-    schema_api = api.SchemaApi(client)
-    server_version_response = schema_api.get_version()
-    assert server_version_response.version
-    server_version_elements = server_version_response.version.split(".")
-    server_version = tuple([int(e) for e in server_version_elements])
-    return server_version
 
 
 class SystemApiClient(ApiClient, ABC):
@@ -208,6 +182,18 @@ class SystemApiClient(ApiClient, ABC):
         partial_func = functools.partial(get_next_page, self, filter_._to_model())
         return _PagedResult(partial_func, ActivityItem)
 
+    def get_granta_mi_version(self) -> GrantaMIVersion:
+        """
+        Get the version of Granta MI running on the server.
+
+        Returns
+        -------
+        GrantaMIVersion
+            Granta MI version information.
+        """
+        version = self.schema_api.get_version()
+        return GrantaMIVersion._from_model(version)
+
 
 class Connection(ApiClientFactory):
     """
@@ -331,7 +317,7 @@ class Connection(ApiClientFactory):
             ) from e
 
         try:
-            server_version = _get_mi_server_version(client)
+            server_version = client.get_granta_mi_version()
         except ApiException as e:
             # Currently the server version check returns a 403 for a System Admin-only user
             # Suppress this spurious failure by returning early
@@ -347,9 +333,9 @@ class Connection(ApiClientFactory):
         # earlier versions. This is not necessary now though, because there is no support for
         # versions earlier than 2026 R1.
 
-        if server_version < MINIMUM_GRANTA_MI_VERSION:
+        if server_version.version < MINIMUM_GRANTA_MI_VERSION:
             raise ConnectionError(
                 f"This package requires a more recent Granta MI version. Detected Granta MI server "
-                f"version is {'.'.join([str(e) for e in server_version])}, but this package "
-                f"requires at least {'.'.join([str(e) for e in MINIMUM_GRANTA_MI_VERSION])}."
+                f"version is {server_version}, but this package requires at least "
+                f"{'.'.join([str(e) for e in MINIMUM_GRANTA_MI_VERSION])}."
             )

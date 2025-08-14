@@ -1,7 +1,7 @@
 .. _ref_grantami_system_models:
 
 Models
-=======
+======
 
 Activity log
 ~~~~~~~~~~~~
@@ -15,3 +15,6 @@ Activity log
 .. autoclass:: ansys.grantami.system.ActivityUsageMode(value)
    :members:
    :undoc-members:
+
+.. autoclass:: ansys.grantami.system.GrantaMIVersion
+   :members:
