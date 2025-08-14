@@ -52,7 +52,7 @@ APP_NAME_2 = "app_name_with 😂"
 DB_KEY = "test_db_key"
 START_DATE = date(year=2022, month=5, day=12)
 END_DATE = date(year=2023, month=5, day=12)
-USERNAME = "domain\\test_user"
+USERNAME = r"domain\test_user"
 
 
 def at_midnight(date_: date) -> datetime:

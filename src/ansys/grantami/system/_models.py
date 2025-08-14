@@ -300,48 +300,24 @@ class ActivityReportFilter:
         return model
 
 
+@dataclass(frozen=True)
 class ActivityItem:
     """
     Describes an activity report item as obtained from the API.
 
-    Read-only - do not directly instantiate or modify instances of this class.
-
-    Other Parameters
-    ----------------
-    activity_date : datetime.date
-        The date on which the activity occurred.
-    application_names : list of str
-        The application or applications used in the activity.
-    username : str
-        The user who performed the activity.
-    usage_mode : ActivityUsageMode
-        The usage mode associated with the activity.
-    database_key : str, optional
-        The database key used in the activity.
+    Read-only dataclass - do not directly instantiate or modify instances of this class.
     """
 
-    def __init__(
-        self,
-        activity_date: date,
-        application_names: list[str],
-        username: str,
-        usage_mode: ActivityUsageMode,
-        database_key: Optional[str],
-    ) -> None:
-        self.activity_date = activity_date
-        self.application_names = application_names
-        self.username = username
-        self.usage_mode = usage_mode
-        self.database_key = database_key
-
-    def __repr__(self) -> str:
-        """Printable representation of the object."""
-        database_key = f'"{self.database_key}"' if self.database_key else "None"
-        repr = (
-            f'<{self.__class__.__name__} activity_date={self.activity_date}, username="{self.username}", '
-            f"database_key={database_key}, usage_mode={self.usage_mode}>"
-        )
-        return repr
+    activity_date: date
+    """The date on which the activity occurred."""
+    application_names: list[str]
+    """The application or applications used in the activity."""
+    username: str
+    """The user who performed the activity."""
+    usage_mode: ActivityUsageMode
+    """The usage mode associated with the activity."""
+    database_key: Optional[str]
+    """The database key used in the activity."""
 
     @classmethod
     def _from_model(
@@ -371,25 +347,6 @@ class ActivityItem:
             usage_mode=ActivityUsageMode(model.usage_mode.value),
             database_key=model.database_key if model.database_key else None,
         )
-
-    def to_dict(self) -> dict[str, date | str | ActivityUsageMode | list[str] | None]:
-        """
-        Return a dictionary representation of the object.
-
-        Can be used to create a DataFrame.
-
-        Returns
-        -------
-        dict[str, datetime.date | str | ActivityUsageMode | list[str] | None]
-            The object represented as a dictionary. Each key-value pair corresponds to a public attribute of the object.
-        """
-        return {
-            "database_key": self.database_key,
-            "usage_mode": self.usage_mode,
-            "application_names": self.application_names,
-            "activity_date": self.activity_date,
-            "username": self.username,
-        }
 
 
 T = TypeVar("T")
