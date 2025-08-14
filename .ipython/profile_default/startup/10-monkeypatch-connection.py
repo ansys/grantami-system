@@ -2,6 +2,7 @@ import os
 
 from ansys.grantami.system import Connection
 from ansys.grantami.system._connection import SystemApiClient
+from ansys.grantami.system._models import GrantaMIVersion
 
 # Monkey patch the Connection() class to use the environment variable-specified server URL.
 original_ctor = Connection.__init__
@@ -41,3 +42,14 @@ def __repr__(self: SystemApiClient) -> str:  # noqa: N807
 
 
 SystemApiClient.__repr__ = __repr__
+
+
+def get_granta_mi_version(self: SystemApiClient) -> GrantaMIVersion:
+    return GrantaMIVersion(
+        version=(26, 1, 0, 0),
+        binary_compatibility_version="26.1.0.0",
+    )
+
+
+# Required until system admin user can access server version
+SystemApiClient.get_granta_mi_version = get_granta_mi_version
