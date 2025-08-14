@@ -45,9 +45,12 @@ anonymized_items = []
 
 for item in items:
     current_username = item.username
+
     try:
+        # If an anonymized username has already been created, retrieve it
         anonymized_name = anonymized_usernames[current_username]
     except KeyError:
+        # If not,
         anonymized_name = f"Anonymous user {len(anonymized_items)}"
         anonymized_usernames[current_username] = anonymized_name
 
@@ -56,6 +59,6 @@ for item in items:
 # -
 
 # Each item in the activity report now contains an anonymized username. Any analytics that aggregate unique numbers of
-# users will produce the same results, but no individual user information will be available.
+# users will produce the same results, but usernames of individuals will not be included in any more granular results.
 
 print(anonymized_items[0])
