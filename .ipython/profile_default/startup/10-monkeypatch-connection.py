@@ -12,6 +12,7 @@ def new_init(self: Connection, _):
     original_ctor(self, os.getenv("TEST_SL_URL"))
 
 
+print("Patching ansys.grantami.system.Connection.__init__")
 Connection.__init__ = new_init
 
 # Monkey patch the Connection builder methods to use the environment variable-specified credentials.
@@ -28,7 +29,10 @@ def with_autologon(self: Connection) -> Connection:
     return self.with_credentials("foo", "bar")
 
 
+print("Patching ansys.grantami.system.Connection.with_credentials")
 Connection.with_credentials = with_credentials
+
+print("Patching ansys.grantami.system.Connection.with_autologon")
 Connection.with_autologon = with_autologon
 
 
@@ -41,6 +45,7 @@ def __repr__(self: SystemApiClient) -> str:  # noqa: N807
     return f"<SystemApiClient url: {server_url}>"
 
 
+print("Patching ansys.grantami.system.SystemApiClient.__repr__")
 SystemApiClient.__repr__ = __repr__
 
 
@@ -51,5 +56,6 @@ def get_granta_mi_version(self: SystemApiClient) -> GrantaMIVersion:
     )
 
 
+print("Patching ansys.grantami.system.SystemApiClient.get_granta_mi_version")
 # Required until system admin user can access server version
 SystemApiClient.get_granta_mi_version = get_granta_mi_version

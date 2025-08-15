@@ -191,7 +191,7 @@ jobs:
           dependencies: "pandoc"
           sphinxopts: "-n -W --keep-going"
           group-dependencies-name: 'doc'
-          optional-dependencies-name: 'examples'
+          optional-dependencies-name: ''
 
   check-workflow-runs:
     if: ${{ !cancelled() }}
