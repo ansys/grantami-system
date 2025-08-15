@@ -52,7 +52,7 @@ dependencies = [
 examples = [
   "pandas[excel]~=2.3",
   "jupyterlab>=3,<5",
-  "plotly~=6.2.0",
+  "plotly~=6.0",
 ]
 
 [tool.uv.sources]
