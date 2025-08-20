@@ -17,19 +17,16 @@
 
 # This example shows how to analyze and display an activity report.
 #
-# This example makes extensive use of the [pandas](https://pandas.pydata.org/)
-# and [plotly](https://plotly.com/python/) libraries. Examples using these
-# libraries are presented here largely without explanation. Consult the
-# documentation for these packages to understand any limitations of the
-# approaches demonstrated here, and also how to modify and extend these
-# examples.
+# This example makes extensive use of the [pandas](https://pandas.pydata.org/) and
+# [plotly](https://plotly.com/python/) libraries. Examples using these libraries are presented here largely without
+# explanation. Consult the documentation for these packages to understand any limitations of the approaches demonstrated
+# here, and also how to modify and extend these examples.
 
 # ## Fetch the activity report
 
-# Import the ``Connection`` class, create the connection, and fetch the activity report for the
-# 12 months between July 2024 and June 2025. For more information, see the
-# [Basic Usage](../1_Basic_usage.ipynb) and [Access an activity report](2-1_Access_activity_report.ipynb)
-# examples.
+# Import the ``Connection`` class, create the connection, and fetch the activity report for the 12 months between July
+# 2024 and June 2025. For more information, see the [Basic Usage](../1_Basic_usage.ipynb) and
+# [Access an activity report](2-1_Access_activity_report.ipynb) examples.
 
 # +
 from datetime import date
@@ -48,8 +45,8 @@ items = client.get_activity_report_where(date_filter)
 
 # ## Process the activity report using a DataFrame
 
-# Prepare the activity report items as a list of dictionaries, where the information for a single
-# activity log entry is represented as a dictionary.
+# Prepare the activity report items as a list of dictionaries, where the information for a single activity log entry is
+# represented as a dictionary.
 #
 # ActivityItem is a dataclass, so use the standard library `dataclasses.asdict()` function to create a dictionary for
 # each item.
@@ -115,8 +112,8 @@ df_activity_per_month = pd.pivot_table(
 )
 df_activity_per_month.head()
 
-# Finally, plot a bar chart the `plotly` express API. See the plotly documentation for more information on the methods
-# used in the cell below.
+# Finally, plot a bar chart using the `plotly` express API. See the plotly documentation for more information on the
+# methods used in the cell below.
 
 # +
 import plotly.express as px

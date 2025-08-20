@@ -15,7 +15,7 @@
 
 # # Access an activity report
 
-# This example shows how to connect to Granta MI and access the activity log. It shows how to view all activity log
+# This example shows how to connect to Granta MI and access the activity report. It shows how to view all activity
 # entries, or how to select entries that meet one or more criteria.
 
 # ## Connect to Granta MI
@@ -43,7 +43,7 @@ client = connection.connect()
 # status code.
 # </div>
 
-all_logs = client.get_activity_report()
+all_items = client.get_activity_report()
 
 # Iterate over the first few items in the response, using `itertools.islice` to slice the iterator:
 
@@ -51,7 +51,7 @@ all_logs = client.get_activity_report()
 from itertools import islice
 
 print("Printing first 5...")
-for item in islice(all_logs, 5):
+for item in islice(all_items, 5):
     print(
         f"dbkey: {item.database_key}, user: {item.username}, date:{item.activity_date}, "
         f"mode: {item.usage_mode.value}, app names: {item.application_names}"
@@ -63,19 +63,19 @@ for item in islice(all_logs, 5):
 # Iterators and paged API responses are efficient, because the data is only requested at the point at which it is
 # required.
 #
-# However, by design, iterators do not have a defined length. This means calling `len(all_logs)` directly will raise an
+# However, by design, iterators do not have a defined length. This means calling `len(all_items)` directly will raise an
 # exception. To find the number of items returned, first convert the response to a `list`.
 #
 # Iterating over an iterator consumes the items iterated over, so first re-run the `get_activity_report()` to get a
 # fresh iterator.
 
 # +
-all_logs = client.get_activity_report()  # Initial request fetches the first page of results.
+all_items = client.get_activity_report()  # Initial request fetches the first page of results.
 
-all_logs_list = list(all_logs)  # Exhausts the iterator and stores all items in a list.
+all_items_list = list(all_items)  # Exhausts the iterator and stores all items in a list.
 # Subsequent pages are fetched via additional requests as the iterator is exhausted.
 
-print(f"{len(all_logs_list)} activity log items in Granta MI.")
+print(f"{len(all_items_list)} activity report items in Granta MI.")
 # -
 
 # In general though, converting an iterator to a list should be avoided unless necessary.
@@ -85,9 +85,9 @@ print(f"{len(all_logs_list)} activity log items in Granta MI.")
 
 # +
 # Initial request fetches the first page of results.
-all_logs_page_size_100 = client.get_activity_report(page_size=100)
+all_items_page_size_100 = client.get_activity_report(page_size=100)
 
-len(list(all_logs_page_size_100))  # 11 additional requests are made. Each request returns a maximum of 100 results.
+len(list(all_items_page_size_100))  # 11 additional requests are made. Each request returns a maximum of 100 results.
 # -
 
 # ## Fetch activities for a specific database
@@ -104,12 +104,12 @@ database_filter = ActivityReportFilter().with_database_key("MI_Corporate_Design_
 
 # Use the `get_activity_report_where()` method to only get report items that match the filter.
 
-mi_training_logs = client.get_activity_report_where(database_filter)
+design_data_items = client.get_activity_report_where(database_filter)
 
 # Again, iterate over the first 5 items in the response:
 
 print("Printing first 5...")
-for item in islice(mi_training_logs, 5):
+for item in islice(design_data_items, 5):
     print(
         f"dbkey: {item.database_key}, user: {item.username}, date:{item.activity_date}, "
         f"mode: {item.usage_mode.value}, app names: {item.application_names}"
@@ -119,12 +119,12 @@ for item in islice(mi_training_logs, 5):
 
 # ## Apply a more complex filter
 
-# Create a more complex filter, applying the following criteria:
+# Create a more complex filter, applying the following criteria to the activity:
 #
 # * The activity was performed by `'USER_5'`.
 # * The activity occurred within the first quarter of 2025.
 # * The activity was an `EDIT` operation on the `'MI_Corporate_Design_Data'` database.
-# * The activity used `'MI Scripting Toolkit'` to make the modification.
+# * The application `'MI Scripting Toolkit'` was used for the activity.
 
 # +
 from datetime import date
