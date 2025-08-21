@@ -48,6 +48,13 @@ dependencies = [
     "ansys-openapi-common~=2.0",
 ]
 
+[project.optional-dependencies]
+examples = [
+  "pandas[excel]~=2.3",
+  "jupyterlab>=3,<5",
+  "plotly~=6.0",
+]
+
 [tool.uv.sources]
 ansys-grantami-serverapi-openapi = { index = "pyansys-pypi" }
 
@@ -63,7 +70,7 @@ dev = [
     "pytest-cov~=6.2",
     "mypy~=1.9",
     "types-requests~=2.26",
-    "requests-mock>=1.12.1",
+    "requests-mock~=1.12.1",
 ]
 
 doc = [
@@ -79,6 +86,10 @@ doc = [
     "sphinx-design~=0.6",
     "sphinx-autoapi~=3.1",
     "sphinxcontrib-napoleon~=0.7",
+    "kaleido~=1.0",
+    "choreographer~=1.0",
+    "ipython~=8.0",
+    "ansys-grantami-system[examples]",
 ]
 
 [tool.coverage.run]

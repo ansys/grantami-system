@@ -12,7 +12,8 @@ The following examples demonstrate key aspects of PyGranta System.
     .. toctree::
        :maxdepth: 2
 
-       00_basic_usage
+       1_Basic_usage
+       1_Activity/index
 
     {% else %}
 
