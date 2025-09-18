@@ -8,3 +8,4 @@ THIRDPARTY
 autologon
 System
 uv
+application

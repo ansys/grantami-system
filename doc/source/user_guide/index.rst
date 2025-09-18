@@ -3,7 +3,7 @@
 User guide
 ##########
 
-PyGranta System is a Python client application that allows access to Granta MI system-level functions.
+PyGranta System is a Python client library that allows access to Granta MI system-level functions.
 
 Activity report
 ---------------
@@ -20,7 +20,7 @@ The report is updated daily at midnight server time, with entries for the previo
 operation has completed. Common activities are merged during the update, such that activity report only contains unique
 entries.
 
-The report can be used to determine the number of unique users accessing a Granta MI system within a certain timeframe,
+The report can be used to determine the number of unique users accessing a Granta MI system within a certain period,
 and can be filtered by application, database, and operation type.
 
 The report cannot be used to determine how many times a user accessed the system. The report only shows whether the user
