@@ -26,6 +26,7 @@ and can be filtered by application, database, and operation type.
 The report cannot be used to determine how many times a user accessed the system. The report only shows whether the user
 accessed the system or not, along with which applications and databases they used.
 
-See :ref:`ref_grantami_system_examples_activity` for code examples showing how to access and process activity reports.
-For more information about activity report, consult the
-:MI_docs:`Granta MI <Granta_MI_Admin_and_Config/mi_admin_and_config/logging_application_activity.html>` documentation.
+See :ref:`ref_grantami_system_examples_activity` for code examples showing how to access and process activity reports,
+and
+:MI_docs:`Viewing Application Activity information <Granta_MI_Admin_and_Config/mi_admin_and_config/logging_application_activity.html>`
+on the Ansys Help Center for more details.
