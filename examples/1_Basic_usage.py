@@ -14,7 +14,7 @@
 # ---
 
 # # Getting started
-# This example shows how to connect to Granta MI and perform basic operations.
+# This example shows how to connect to Granta MI to access version information and activity reports.
 
 # ## Connect to Granta MI
 
@@ -35,6 +35,21 @@ connection = Connection("http://my_grantami_server/mi_servicelayer").with_autolo
 client = connection.connect()
 # -
 
+# ## Access Granta MI version information
+# The Granta MI version can be accessed with the ``SystemApiClient.get_granta_mi_version()`` method.
+
+mi_version = client.get_granta_mi_version()
+print(mi_version)
+
+# The `.version` property is a tuple, and can be compared with a minimum required version
+# using the `>` operator.
+
+minimum_version = (25, 2)
+if mi_version.version > minimum_version:
+    print("Granta MI version meets minimum requirements")
+else:
+    print("Granta MI version does not meet minimum requirements")
+
 # ## Access activity report
 # The activity report describes which users have accessed the Granta MI server. This report lists all user activity in
 # the Granta MI system and includes the following information:
@@ -50,18 +65,3 @@ client = connection.connect()
 items = client.get_activity_report()
 item = next(items)
 print(item)
-
-# ## Access Granta MI version information
-# The Granta MI version can be accessed with the ``SystemApiClient.get_granta_mi_version()`` method.
-
-mi_version = client.get_granta_mi_version()
-print(mi_version)
-
-# The `.version` property is a tuple, and can be compared with a minimum required version
-# using the `>` operator.
-
-minimum_version = (25, 2)
-if mi_version.version > minimum_version:
-    print("Granta MI version meets minimum requirements")
-else:
-    print("Granta MI version does not meet minimum requirements")
