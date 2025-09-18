@@ -1,4 +1,4 @@
-.. _ref_grantami_bomanalytics_impactedsubstances:
+.. _ref_grantami_system_examples_activity:
 
 .. jinja:: examples
 

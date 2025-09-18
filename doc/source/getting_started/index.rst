@@ -31,7 +31,8 @@ Check that you can start the PyGranta System client from Python by running this 
 
     <SystemApiClient url: http://my.server.name/mi_servicelayer>
 
-This example uses Windows-based autologon authentication. For all supported authentication schemes, see the :OpenAPI-Common:`OpenAPI-Common documentation <index.html#authentication-schemes>`.
+This example uses Windows-based autologon authentication. For all supported authentication schemes, see the
+:OpenAPI-Common:`OpenAPI-Common documentation <index.html#authentication-schemes>`.
 
 If you see a response from the server, you have successfully installed PyGranta System and
 can start using the Granta MI System client. For more examples, see
