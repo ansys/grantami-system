@@ -91,7 +91,7 @@ jobs:
 
       - name: "Start VM with Azure CLI"
         id: azure_cli
-        uses: azure/CLI@089eac9d8cc39f5d003e94f8b65efc51076c9cbd  #v2.1.0
+        uses: azure/CLI@9f7ce6f37c31b777ec6c6b6d1dfe7db79f497956  #v2.2.0
         if:   ${{ !(inputs.skip-vm-management)}}
         with:
           azcliversion: 2.32.0
@@ -138,7 +138,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
 
       - name: Install uv defined in pyproject.toml
-        uses: astral-sh/setup-uv@b75a909f75acd358c2196fb9a5f1299a9a8868a4  # v6.7.0
+        uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e  # v6.8.0
         with:
           version: ${{ env.UV_VERSION }}
           python-version: ${{ inputs.python-version }}
@@ -180,7 +180,7 @@ jobs:
     needs: integration-tests
     steps:
       - name: "Run Ansys documentation building action"
-        uses: ansys/actions/doc-build@e0de7dd89b2a4c100f74327666d5521cfda17950  # v10.1.1
+        uses: ansys/actions/doc-build@c2fa7c93f6883114e0e643599431b33d29f0b13f  # v10.1.4
         env:
           TEST_SL_URL: ${{secrets.TEST_SERVER_DEV_URL}}
           TEST_USER: ${{secrets.TEST_SERVER_SYSADMIN_USER}}
@@ -213,7 +213,7 @@ jobs:
           - "AZURE_VM_NAME_24R2"
           - "AZURE_VM_NAME_24R1"
     steps:
-      - uses: azure/CLI@089eac9d8cc39f5d003e94f8b65efc51076c9cbd  #v2.1.0
+      - uses: azure/CLI@9f7ce6f37c31b777ec6c6b6d1dfe7db79f497956  #v2.2.0
         with:
           azcliversion: 2.32.0
           inlineScript: |
