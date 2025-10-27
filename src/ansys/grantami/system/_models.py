@@ -423,7 +423,7 @@ class _PagedResult(Iterator[T]):
 class GrantaMIVersion:
     """Information about a Granta MI version."""
 
-    version: tuple[int, int, *tuple[int, ...]]
+    version: tuple[int, ...]
     """The full version number as a n-tuple of integers, where n >= 2."""
 
     binary_compatibility_version: str
@@ -439,7 +439,7 @@ class GrantaMIVersion:
         tuple of int
             The major-minor version as a 2-tuple of ints.
         """
-        return self.version[:2]
+        return cast(tuple[int, int], self.version[:2])
 
     @classmethod
     def _from_model(cls, model: models.GsaMiVersion) -> "GrantaMIVersion":
@@ -465,7 +465,7 @@ class GrantaMIVersion:
         return result
 
     @staticmethod
-    def _string_to_tuple(version: str) -> tuple[int, int, *tuple[int, ...]]:
+    def _string_to_tuple(version: str) -> tuple[int, ...]:
         """
         Convert a period-separated string to a tuple of integers of at least length 2.
 
