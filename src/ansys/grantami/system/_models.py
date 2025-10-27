@@ -483,9 +483,7 @@ class GrantaMIVersion:
         version_seq = version.split(".")
         if len(version_seq) < 2:
             raise ValueError(f"Provided version '{version}' is not a valid version string.")
-        version_tuple = tuple(int(i) for i in version_seq)
-        version_typed = cast(tuple[int, int, *tuple[int, ...]], version_tuple)
-        return version_typed
+        return tuple(int(i) for i in version_seq)
 
     def __str__(self) -> str:
         """
