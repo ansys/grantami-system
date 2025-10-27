@@ -24,7 +24,7 @@
 from dataclasses import dataclass
 from datetime import date, datetime
 from enum import Enum
-from typing import Callable, Iterator, Optional, Self, Type, TypeVar, cast
+from typing import Callable, Iterator, Optional, Type, TypeVar, cast
 
 from ansys.openapi.common import Unset_Type
 
@@ -96,7 +96,7 @@ class ActivityReportFilter:
         """Printable representation of the object."""
         return f"<{self.__class__.__name__} ...>"
 
-    def with_application_name(self, application_name: str, exact_match: bool = False) -> Self:
+    def with_application_name(self, application_name: str, exact_match: bool = False) -> "ActivityReportFilter":
         """
         Filter based on a single application name used as part of the activity.
 
@@ -125,7 +125,7 @@ class ActivityReportFilter:
         )
         return self
 
-    def with_application_names(self, application_names: list[str], exact_match: bool = False) -> Self:
+    def with_application_names(self, application_names: list[str], exact_match: bool = False) -> "ActivityReportFilter":
         """
         Filter based on multiple application names used as part of the activity.
 
@@ -153,7 +153,7 @@ class ActivityReportFilter:
         )
         return self
 
-    def with_database_key(self, database_key: str | None, exact_match: bool = False) -> Self:
+    def with_database_key(self, database_key: str | None, exact_match: bool = False) -> "ActivityReportFilter":
         """
         Filter based on a database key used as part of the activity.
 
@@ -181,7 +181,7 @@ class ActivityReportFilter:
         )
         return self
 
-    def with_date_from(self, date_from: date, inclusive: bool = False) -> Self:
+    def with_date_from(self, date_from: date, inclusive: bool = False) -> "ActivityReportFilter":
         """
         Filter based on the earliest allowed date of the activity.
 
@@ -202,7 +202,7 @@ class ActivityReportFilter:
         self._date_from_inclusive = inclusive
         return self
 
-    def with_date_to(self, date_to: date, inclusive: bool = False) -> Self:
+    def with_date_to(self, date_to: date, inclusive: bool = False) -> "ActivityReportFilter":
         """
         Filter based on the latest allowed date of the activity.
 
@@ -223,7 +223,7 @@ class ActivityReportFilter:
         self._date_to_inclusive = inclusive
         return self
 
-    def with_usage_mode(self, usage_mode: ActivityUsageMode) -> Self:
+    def with_usage_mode(self, usage_mode: ActivityUsageMode) -> "ActivityReportFilter":
         """
         Filter based on the usage mode of the activity.
 
@@ -241,7 +241,7 @@ class ActivityReportFilter:
         self._usage_mode_filter = models.GsaActivityLogUsageModeFilter(usage_mode_to_match=mode)
         return self
 
-    def with_username(self, username: str, exact_match: bool = False) -> Self:
+    def with_username(self, username: str, exact_match: bool = False) -> "ActivityReportFilter":
         """
         Filter based on the username of the user who performed the activity.
 
@@ -384,7 +384,7 @@ class _PagedResult(Iterator[T]):
         """Printable representation of the object."""
         return f"<{self.__class__.__name__}[{self._iterator_type.__name__}] page_index={self._page_index}>"
 
-    def __iter__(self) -> Self:
+    def __iter__(self) -> "_PagedResult[T]":
         """
         Return the iterator associated with this object.
 
