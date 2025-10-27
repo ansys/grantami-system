@@ -43,7 +43,7 @@ classifiers = [
 
 requires-python = ">=3.11"
 dependencies = [
-    "ansys-grantami-serverapi-openapi==5.1.0.dev786",
+    "ansys-grantami-serverapi-openapi==5.1.0.dev849",
     "requests~=2.26",
     "ansys-openapi-common~=2.0",
 ]
