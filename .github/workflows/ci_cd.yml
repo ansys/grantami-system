@@ -107,7 +107,7 @@ jobs:
     strategy:
        matrix:
            os: [ubuntu-latest, windows-latest]
-           python-version: ['3.11', '3.12', '3.13']
+           python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
     steps:
       - uses: ansys/actions/build-wheelhouse@c2fa7c93f6883114e0e643599431b33d29f0b13f  # v10.1.4
         with:
@@ -124,7 +124,7 @@ jobs:
     strategy:
       matrix:
        os: [ubuntu-latest, windows-latest]
-       python-version: ['3.11', '3.12', '3.13']
+       python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
       fail-fast: false
     steps:
       - name: "Checkout the repository"

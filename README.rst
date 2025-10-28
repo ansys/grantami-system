@@ -12,9 +12,9 @@ Dependencies
 ------------
 .. readme_software_requirements
 
-This version of the ``ansys.grantami.system`` package requires Granta MI 2026 R1 or later. 
+This version of the ``ansys.grantami.system`` package requires Granta MI 2026 R1 or later.
 
-The ``ansys.grantami.system`` package currently supports Python from version 3.11 to version 3.13.
+The ``ansys.grantami.system`` package currently supports Python from version 3.10 to version 3.14.
 
 .. readme_software_requirements_end
 
