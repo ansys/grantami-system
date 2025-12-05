@@ -45,7 +45,7 @@ To install a local *development* version with Git and uv, use this code:
 
     git clone https://github.com/ansys/grantami-system
     cd grantami-system
-    uv install
+    uv sync
 
 
 The preceding code installs the package and allows you to modify it locally,

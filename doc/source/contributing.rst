@@ -33,7 +33,7 @@ build the documentation, and build the package.
 
     git clone https://github.com/ansys/grantami-system
     cd grantami-system
-    poetry install --with doc
+    uv sync --only-group doc
 
 Additional tools
 -----------------
