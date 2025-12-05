@@ -48,7 +48,7 @@ To install a local *development* version with Git and uv, use this code:
     uv sync
 
 
-The preceding code installs the package and allows you to modify it locally,
+The preceding code installs the package (with development dependencies) and allows you to modify it locally,
 with your changes reflected in your Python setup after restarting the Python kernel.
 
 .. readme_installation_end

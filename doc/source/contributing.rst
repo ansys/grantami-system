@@ -33,7 +33,7 @@ build the documentation, and build the package.
 
     git clone https://github.com/ansys/grantami-system
     cd grantami-system
-    uv sync --only-group doc
+    uv sync --group doc
 
 Additional tools
 -----------------
@@ -109,9 +109,19 @@ As per PyAnsys guidelines, the documentation is generated using `Sphinx`_.
 
 For building documentation, use the Sphinx Makefile:
 
-.. code:: bash
+.. tab-set::
 
-    make -C doc/ html && your_browser_name doc/build/html/index.html
+    .. tab-item:: Windows
+
+        .. code-block:: text
+
+            .\doc\make.bat html && start "" doc\_build\html\index.html
+
+    .. tab-item:: Linux/macOS/Unix
+
+        .. code-block:: text
+
+            make -C doc/ html && your_browser_name doc/build/html/index.html
 
 If any changes have been made to the documentation, you should run
 Sphinx directly with the following extra arguments:
