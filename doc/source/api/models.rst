@@ -1,10 +1,10 @@
 .. _ref_grantami_system_models:
 
 Models
-======
+######
 
 Activity log
-~~~~~~~~~~~~
+============
 
 .. autoclass:: ansys.grantami.system.ActivityReportFilter
    :members:

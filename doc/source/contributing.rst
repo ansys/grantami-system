@@ -97,7 +97,17 @@ validate changes are compliant is to run this command:
 
 .. code:: bash
 
-    pre-commit run --all-files
+    $ pre-commit run --all-files
+    ruff.....................................................................Passed
+    ruff-format..............................................................Passed
+    codespell................................................................Passed
+    check yaml...............................................................Passed
+    debug statements (python)................................................Passed
+    check for merge conflicts................................................Passed
+    trim trailing whitespace.................................................Passed
+    Add License Headers......................................................Passed
+    numpydoc-validation......................................................Passed
+    mypy: checks on code.....................................................Passed
 
 
 .. _ref_documenting:

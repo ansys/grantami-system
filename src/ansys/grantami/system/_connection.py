@@ -50,6 +50,7 @@ API_DEFINITION_PATH = "/swagger/v1/swagger.json"
 GRANTA_APPLICATION_NAME_HEADER = "PyGranta System"
 
 MINIMUM_GRANTA_MI_VERSION = (26, 1)
+DEFAULT_PAGE_SIZE = 1000
 
 
 class SystemApiClient(ApiClient, ABC):
@@ -99,7 +100,7 @@ class SystemApiClient(ApiClient, ABC):
         """Printable representation of the object."""
         return f"<{self.__class__.__name__} url: {self._service_layer_url}>"
 
-    def get_activity_report(self, page_size: Optional[int] = 1000) -> Iterator[ActivityItem]:
+    def get_activity_report(self, page_size: Optional[int] = DEFAULT_PAGE_SIZE) -> Iterator[ActivityItem]:
         """
         Get all activity information from the Granta MI server.
 
@@ -126,7 +127,7 @@ class SystemApiClient(ApiClient, ABC):
     def get_activity_report_where(
         self,
         filter_: ActivityReportFilter,
-        page_size: Optional[int] = 1000,
+        page_size: Optional[int] = DEFAULT_PAGE_SIZE,
     ) -> Iterator[ActivityItem]:
         """
         Get activity information from the Granta MI server that matches a filter.

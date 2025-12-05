@@ -6,7 +6,7 @@ User guide
 PyGranta System is a Python client library that allows access to Granta MI system-level functions.
 
 Activity report
----------------
+===============
 
 The MI Application Activity Summary report is a rolling monthly summary of user activity in your Granta MI system. The
 report includes the following information:

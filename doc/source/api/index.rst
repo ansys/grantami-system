@@ -10,7 +10,7 @@ The API for PyGranta System comprises the following key areas:
 - :ref:`ref_grantami_system_models` describes resources handled by the client.
 
 Table of contents
-~~~~~~~~~~~~~~~~~~
+=================
 .. toctree::
    :maxdepth: 2
 

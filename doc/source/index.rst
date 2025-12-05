@@ -1,5 +1,5 @@
 PyGranta System |version|
-=========================
+#########################
 
 PyGranta System, a component of the PyGranta software suite, provides a
 Python interface for Granta MI System Administration functions.

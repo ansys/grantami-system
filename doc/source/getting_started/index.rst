@@ -6,21 +6,21 @@ Getting started
 .. _ref_software_requirements:
 
 Software requirements
-~~~~~~~~~~~~~~~~~~~~~
+=====================
 .. include:: ../../../README.rst
       :start-after: readme_software_requirements
       :end-before: readme_software_requirements_end
 
 
 Installation
-~~~~~~~~~~~~
+============
 .. include:: ../../../README.rst
       :start-after: readme_installation
       :end-before: readme_installation_end
 
 
 Verify your installation
-~~~~~~~~~~~~~~~~~~~~~~~~
+========================
 Check that you can start the PyGranta System client from Python by running this code:
 
 .. code:: python

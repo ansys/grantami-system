@@ -1,10 +1,10 @@
 .. _ref_grantami_system_connection:
 
 Granta MI connection
-====================
+####################
 
 Connection builder
-~~~~~~~~~~~~~~~~~~
+==================
 
 .. autoclass:: ansys.grantami.system.Connection
     :members:
@@ -15,7 +15,7 @@ Connection builder
     .. automethod:: with_anonymous
 
 PyGranta System client
-~~~~~~~~~~~~~~~~~~~~~~
+======================
 
 .. autoclass:: ansys.grantami.system.SystemApiClient
    :members:
