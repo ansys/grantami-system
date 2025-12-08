@@ -75,8 +75,8 @@ def test_get_activity_log_by_usage_mode(connection_sysadmin, usage_mode):
     _validate_activity_log_item(item, additional_checks={"usage_mode": usage_mode})
 
 
-def test_get_server_version(connection_read):
-    version = connection_read.get_granta_mi_version()
+def test_get_server_version(connection_sysadmin):
+    version = connection_sysadmin.get_granta_mi_version()
     assert version.major_minor_version
     assert version.version
     assert version.binary_compatibility_version

@@ -160,8 +160,6 @@ jobs:
           TEST_SL_URL: ${{ secrets[matrix.server.url] }}
           TEST_SYSADMIN_USER: ${{secrets.TEST_SERVER_SYSADMIN_USER}}
           TEST_SYSADMIN_PASS: ${{secrets.TEST_SERVER_SYSADMIN_PASS}}
-          TEST_READ_USER: ${{secrets.TEST_SERVER_READ_USER}}
-          TEST_READ_PASS: ${{secrets.TEST_SERVER_READ_PASS}}
 
 
 #      - name: "Upload coverage to Codecov"
