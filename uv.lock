@@ -32,16 +32,16 @@ wheels = [
 
 [[package]]
 name = "ansys-grantami-serverapi-openapi"
-version = "5.1.0.dev849"
-source = { registry = "https://pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/" }
+version = "5.1.0rc0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ansys-openapi-common" },
     { name = "python-dateutil" },
     { name = "requests" },
 ]
-sdist = { url = "https://pkgs.dev.azure.com/pyansys/_packaging/705e121a-9631-49f5-8aaf-c7142856f923/pypi/download/ansys-grantami-serverapi-openapi/5.1.dev849/ansys_grantami_serverapi_openapi-5.1.0.dev849.tar.gz", hash = "sha256:4beea773b92ad2bad2272d064a8f4d76a336b3ad8acba52e49579dacca7ea62f" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/c4/6fb5e0fe088bdd0510560360630cbf2558efe8cc88cb8c37e0be673ebbf0/ansys_grantami_serverapi_openapi-5.1.0rc0.tar.gz", hash = "sha256:9e445f7aa6bb1774276fc26dd58cccc4b8b83fba87532370a47ad437e876ca2f", size = 2131210, upload-time = "2025-12-09T11:47:48.641Z" }
 wheels = [
-    { url = "https://pkgs.dev.azure.com/pyansys/_packaging/705e121a-9631-49f5-8aaf-c7142856f923/pypi/download/ansys-grantami-serverapi-openapi/5.1.dev849/ansys_grantami_serverapi_openapi-5.1.0.dev849-py3-none-any.whl", hash = "sha256:11c94b9a8f9a1dd649370c28c83abaad1db7499c034d0f70cf5b8a49f1c87926" },
+    { url = "https://files.pythonhosted.org/packages/f0/dd/4ee34fdc2670b16edea44e23b4dc8deaab4a5e2027e9402ac255ea7a338e/ansys_grantami_serverapi_openapi-5.1.0rc0-py3-none-any.whl", hash = "sha256:13e04b43de089599916923ffa6f2d10c5e98744bae61cb8b6033f7a442683a71", size = 10496043, upload-time = "2025-12-09T11:47:46.368Z" },
 ]
 
 [[package]]
@@ -90,7 +90,7 @@ doc = [
 
 [package.metadata]
 requires-dist = [
-    { name = "ansys-grantami-serverapi-openapi", specifier = "==5.1.0.dev849", index = "https://pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/" },
+    { name = "ansys-grantami-serverapi-openapi", specifier = "==5.1.0rc0" },
     { name = "ansys-openapi-common", specifier = "~=2.0" },
     { name = "jupyterlab", marker = "extra == 'examples'", specifier = ">=3,<5" },
     { name = "pandas", extras = ["excel"], marker = "extra == 'examples'", specifier = "~=2.3" },
@@ -2290,7 +2290,7 @@ wheels = [
 
 [[package]]
 name = "pytest"
-version = "9.0.1"
+version = "9.0.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama", marker = "sys_platform == 'win32'" },
@@ -2301,9 +2301,9 @@ dependencies = [
     { name = "pygments" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/07/56/f013048ac4bc4c1d9be45afd4ab209ea62822fb1598f40687e6bf45dcea4/pytest-9.0.1.tar.gz", hash = "sha256:3e9c069ea73583e255c3b21cf46b8d3c56f6e3a1a8f6da94ccb0fcf57b9d73c8", size = 1564125, upload-time = "2025-11-12T13:05:09.333Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d1/db/7ef3487e0fb0049ddb5ce41d3a49c235bf9ad299b6a25d5780a89f19230f/pytest-9.0.2.tar.gz", hash = "sha256:75186651a92bd89611d1d9fc20f0b4345fd827c41ccd5c299a868a05d70edf11", size = 1568901, upload-time = "2025-12-06T21:30:51.014Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0b/8b/6300fb80f858cda1c51ffa17075df5d846757081d11ab4aa35cef9e6258b/pytest-9.0.1-py3-none-any.whl", hash = "sha256:67be0030d194df2dfa7b556f2e56fb3c3315bd5c8822c6951162b92b32ce7dad", size = 373668, upload-time = "2025-11-12T13:05:07.379Z" },
+    { url = "https://files.pythonhosted.org/packages/3b/ab/b3226f0bd7cdcf710fbede2b3548584366da3b19b5021e74f5bde2a8fa3f/pytest-9.0.2-py3-none-any.whl", hash = "sha256:711ffd45bf766d5264d487b917733b453d917afd2b0ad65223959f59089f875b", size = 374801, upload-time = "2025-12-06T21:30:49.154Z" },
 ]
 
 [[package]]
