@@ -34,12 +34,13 @@ repos:
   - id: numpydoc-validation
     exclude: "^(tests/)|^(.github/)|^(examples/)|^(.ipython/)|^(doc)"
 
-- repo: local
-  hooks:
-  - id: mypy-code
-    name: "mypy: checks on code"
-    entry: "python -m mypy"
-    language: system
-    types: [python]
-    require_serial: true
-    files: "^(src/)"
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.19.0  # Use the sha / tag you want to point at
+    hooks:
+    -   id: mypy
+        name: "mypy: checks on code"
+        entry: "python -m mypy"
+        language: system
+        types: [python]
+        require_serial: true
+        files: "^(src/)"
