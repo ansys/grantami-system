@@ -138,7 +138,7 @@ jobs:
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
 
       - name: Install uv defined in pyproject.toml
-        uses: astral-sh/setup-uv@ed21f2f24f8dd64503750218de024bcf64c7250a  # v7.1.5
+        uses: astral-sh/setup-uv@681c641aba71e4a1c380be3ab5e12ad51f415867  # v7.1.6
         with:
           version: ${{ env.UV_VERSION }}
           python-version: ${{ inputs.python-version }}
@@ -178,7 +178,7 @@ jobs:
     needs: integration-tests
     steps:
       - name: "Run Ansys documentation building action"
-        uses: ansys/actions/doc-build@eb7d0fc873deeee6d4740774675ce1741cb6f154  # v10.2.2
+        uses: ansys/actions/doc-build@41f86da4c9ead510db9135e428e33df9cc6f92e1  # v10.2.3
         env:
           TEST_SL_URL: ${{secrets.TEST_SERVER_DEV_URL}}
           TEST_USER: ${{secrets.TEST_SERVER_SYSADMIN_USER}}
