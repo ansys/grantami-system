@@ -59,7 +59,8 @@ file. The following tox environments are provided:
 
 .. vale off
 
-- ``tox -e style``: Checks for coding style quality.
+- ``tox -e code-style``: Checks for coding style quality.
+- ``tox -e type-check``: Runs static type checking using ``mypy``.
 - ``tox -e tests``: Runs all tests and checks code coverage. (For requirements, see :ref:`ref_serveraccess`.)
 - ``tox -e doc``: Checks the documentation-building process.
 
@@ -107,7 +108,6 @@ validate changes are compliant is to run this command:
     trim trailing whitespace.................................................Passed
     Add License Headers......................................................Passed
     numpydoc-validation......................................................Passed
-    mypy: checks on code.....................................................Passed
 
 
 .. _ref_documenting:
