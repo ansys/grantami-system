@@ -50,27 +50,6 @@ encouraged to install this tool with this command:
 
     python -m pip install pre-commit && pre-commit install
 
-.. _ref_tox:
-
-Tox
-~~~
-Tests can be run using `tox`_. The project defines the tox environments in the ``tox.ini``
-file. The following tox environments are provided:
-
-.. vale off
-
-- ``tox -e code-style``: Checks for coding style quality.
-- ``tox -e type-check``: Runs static type checking using ``mypy``.
-- ``tox -e tests``: Runs all tests and checks code coverage. (For requirements, see :ref:`ref_serveraccess`.)
-- ``tox -e doc``: Checks the documentation-building process.
-
-.. vale on
-
-Optionally, add the ``-- -m "not integration"`` suffix to the commands above to skip integration
-tests. For example, this command only runs tests that do not require a Granta MI instance::
-
-     tox -e tests -- -m "not integration"
-
 .. _ref_serveraccess:
 
 Server access
@@ -80,7 +59,7 @@ As indicated in :ref:`ref_software_requirements`, running integration tests and 
 requires access to a valid Granta MI instance.
 
 External contributors might not have an instance of Granta MI at their disposal. Prior to creating a
-pull request with the desired changes, they should make sure that unit tests pass (:ref:`ref_tox`),
+pull request with the desired changes, they should make sure that unit tests pass,
 static code validation and styling pass (:ref:`pre-commit <ref_precommit>`), and that the
 documentation can be generated successfully without the examples
 (:ref:`Documenting <ref_documenting>`).
@@ -175,7 +154,6 @@ the previous paragraph.
 
 .. _uv: https://docs.astral.sh/uv/
 .. _pre-commit: https://pre-commit.com/
-.. _tox: https://tox.wiki/
 .. _Sphinx: https://www.sphinx-doc.org/en/master/
 .. _jupytext: https://jupytext.readthedocs.io/en/latest/
 .. _nb-convert: https://nbconvert.readthedocs.io/en/latest/
