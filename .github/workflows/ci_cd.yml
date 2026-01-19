@@ -36,7 +36,7 @@ jobs:
     name: "Code style"
     runs-on: ubuntu-latest
     steps:
-      - uses: ansys/actions/code-style@8d3e4946f36c2a7d447b92e34b1022a5c9dc77a7  # v10.0.12
+      - uses: ansys/actions/code-style@41f86da4c9ead510db9135e428e33df9cc6f92e1  # v10.2.3
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           skip-install: false
