@@ -32,21 +32,21 @@ wheels = [
 
 [[package]]
 name = "ansys-grantami-serverapi-openapi"
-version = "5.1.0rc0"
+version = "5.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ansys-openapi-common" },
     { name = "python-dateutil" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/80/c4/6fb5e0fe088bdd0510560360630cbf2558efe8cc88cb8c37e0be673ebbf0/ansys_grantami_serverapi_openapi-5.1.0rc0.tar.gz", hash = "sha256:9e445f7aa6bb1774276fc26dd58cccc4b8b83fba87532370a47ad437e876ca2f", size = 2131210, upload-time = "2025-12-09T11:47:48.641Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/c4/89aa623b46056f9bae8b3e96cccb127ad34cffafd57ecfb18b6b5b8d61b2/ansys_grantami_serverapi_openapi-5.1.0.tar.gz", hash = "sha256:699c9859714b23f4db14090f20d4d274462131672b55602cbef87113eb23ad66", size = 2132692, upload-time = "2025-12-16T14:43:59.874Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f0/dd/4ee34fdc2670b16edea44e23b4dc8deaab4a5e2027e9402ac255ea7a338e/ansys_grantami_serverapi_openapi-5.1.0rc0-py3-none-any.whl", hash = "sha256:13e04b43de089599916923ffa6f2d10c5e98744bae61cb8b6033f7a442683a71", size = 10496043, upload-time = "2025-12-09T11:47:46.368Z" },
+    { url = "https://files.pythonhosted.org/packages/d9/40/f1dbb9cd6f21199bc73af566cd211a820ed4d433a342d7f4c343bcba6497/ansys_grantami_serverapi_openapi-5.1.0-py3-none-any.whl", hash = "sha256:930ef5678e2ccc37f54801a4d57aa910df92842894632362e3f6472b79832859", size = 10496013, upload-time = "2025-12-16T14:43:57.72Z" },
 ]
 
 [[package]]
 name = "ansys-grantami-system"
-version = "0.1.0"
+version = "0.1.dev0"
 source = { editable = "." }
 dependencies = [
     { name = "ansys-grantami-serverapi-openapi" },
@@ -90,7 +90,7 @@ doc = [
 
 [package.metadata]
 requires-dist = [
-    { name = "ansys-grantami-serverapi-openapi", specifier = "==5.1.0rc0" },
+    { name = "ansys-grantami-serverapi-openapi", specifier = "==5.1.0" },
     { name = "ansys-openapi-common", specifier = "~=2.0" },
     { name = "jupyterlab", marker = "extra == 'examples'", specifier = ">=3,<5" },
     { name = "pandas", extras = ["excel"], marker = "extra == 'examples'", specifier = "~=2.3" },

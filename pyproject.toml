@@ -16,7 +16,7 @@ native-tls = true
 [project]
 name = "ansys-grantami-system"
 description = "Control Granta MI system administration functions from Python"
-version = "0.1.0"
+version = "0.1.0.dev0"
 license = "MIT"
 authors = [{ name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }]
 maintainers = [{ name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }]

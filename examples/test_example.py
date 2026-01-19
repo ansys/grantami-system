@@ -15,7 +15,7 @@
 
 # # Test Notebook 1
 
-# Check we can import the Connection class and instantiate some things
+# Check that we can import the Connection class and instantiate some objects.
 
 # + tags=[]
 from ansys.grantami.system import Connection
