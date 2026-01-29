@@ -41,6 +41,10 @@ jobs:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           skip-install: false
 
+      - name: Type check library
+        run:
+          uv run --frozen mypy ./src
+
   doc-style:
     name: "Documentation style"
     runs-on: ubuntu-latest
@@ -138,12 +142,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
           activate-environment: true
 
-      - name: "Install dev dependencies"
-        run: uv sync
-
       - name: "Run tests (unit tests only)"
         run: >
-          pytest
+          uv run --frozen pytest
           -m "not integration"
           --cov=${{ env.LIBRARY_NAMESPACE }}
           --cov-report=term
