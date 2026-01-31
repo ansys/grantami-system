@@ -100,7 +100,7 @@ jobs:
             az vm start -g ${{ secrets.AZURE_RESOURCE_GROUP }} -n ${{ secrets[matrix.server.name] }}
 
       - name: "Set up Python ${{ inputs.python-version }}"
-        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548  # v6.1.0
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0
         with:
           python-version: ${{ inputs.python-version }}
 
@@ -178,7 +178,7 @@ jobs:
     needs: integration-tests
     steps:
       - name: "Run Ansys documentation building action"
-        uses: ansys/actions/doc-build@41f86da4c9ead510db9135e428e33df9cc6f92e1  # v10.2.3
+        uses: ansys/actions/doc-build@36cd86710c966963f4dcec56a9670171618cf76a  # v10.2.4
         env:
           TEST_SL_URL: ${{secrets.TEST_SERVER_DEV_URL}}
           TEST_USER: ${{secrets.TEST_SERVER_SYSADMIN_USER}}
