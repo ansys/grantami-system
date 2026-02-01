@@ -99,18 +99,14 @@ jobs:
             az login --service-principal -u ${{ secrets.AZURE_APP_ID }} -p ${{ secrets.AZURE_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
             az vm start -g ${{ secrets.AZURE_RESOURCE_GROUP }} -n ${{ secrets[matrix.server.name] }}
 
-      - name: "Set up Python ${{ inputs.python-version }}"
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@61cb8a9741eeb8a550a1b8544337180c0fc8476b  # v7.2.0
         with:
           python-version: ${{ inputs.python-version }}
 
       - name: "Check if server is ready"
         run: |
-          python -m venv ./venv
-          source ./venv/bin/activate
-          pip install requests --disable-pip-version-check
-          pip freeze
-          python .github/scripts/check_server.py
+          uv run ./.github/scripts/check_server.py
         env:
           TEST_SL_URL: ${{ secrets[matrix.server.url] }}
           TEST_USER: ${{secrets.TEST_SERVER_READ_USER}}
@@ -144,11 +140,9 @@ jobs:
           python-version: ${{ inputs.python-version }}
           activate-environment: true
 
-      - name: "Install dev dependencies"
-        run: uv sync
-
       - name: "Run tests (integration tests only)"
         run: >
+          uv run --frozen
           pytest
           -m integration
           --mi-version ${{ matrix.server.version }}
