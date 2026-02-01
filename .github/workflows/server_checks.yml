@@ -87,7 +87,7 @@ jobs:
             url: "TEST_SERVER_25R2_URL"
     steps:
       - name: "Checkout the repository"
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
 
       - name: "Start VM with Azure CLI"
         id: azure_cli
@@ -131,7 +131,7 @@ jobs:
       cancel-in-progress: false
     steps:
       - name: "Checkout the repository"
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
 
       - name: Install uv defined in pyproject.toml
         uses: astral-sh/setup-uv@61cb8a9741eeb8a550a1b8544337180c0fc8476b  # v7.2.0
@@ -172,7 +172,7 @@ jobs:
     needs: integration-tests
     steps:
       - name: "Run Ansys documentation building action"
-        uses: ansys/actions/doc-build@41f86da4c9ead510db9135e428e33df9cc6f92e1  # v10.2.3
+        uses: ansys/actions/doc-build@36cd86710c966963f4dcec56a9670171618cf76a  # v10.2.4
         env:
           TEST_SL_URL: ${{secrets.TEST_SERVER_DEV_URL}}
           TEST_USER: ${{secrets.TEST_SERVER_SYSADMIN_USER}}
