@@ -120,7 +120,6 @@ jobs:
           operating-system: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
           attest-provenance: true
-          check-licenses: false  # License check currently fails with uv
 
   tests:
     name: "Tests Python ${{ matrix.python-version }}, ${{ matrix.os }}"
