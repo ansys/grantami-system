@@ -28,7 +28,7 @@ keywords = [
   "Granta MI",
 ]
 classifiers = [
-  "License :: OSI Approved :: MIT License",
+  "License :: OSI Approved :: Apache Software License",
   "Development Status :: 2 - Pre-Alpha",
   "Intended Audience :: Science/Research",
   "Topic :: Scientific/Engineering :: Information Analysis",
