@@ -26,6 +26,7 @@ repos:
     - id: add-license-headers
       args:
       - --start_year=2025
+      - --custom_license=Apache-2.0
       files: '(src|tests)/.*\.(py)'
 
 - repo: https://github.com/numpy/numpydoc
