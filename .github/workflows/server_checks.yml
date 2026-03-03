@@ -44,8 +44,6 @@ on:
         required: true
 
       # Test server URLs
-      TEST_SERVER_DEV_URL:
-        required: true
       TEST_SERVER_26R1_URL:
         required: true
       TEST_SERVER_25R2_URL:
@@ -72,9 +70,6 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  PIP_INDEX_URL: "https://${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/"
-  UV_INDEX_PYANSYS_PYPI_USERNAME: "PAT"
-  UV_INDEX_PYANSYS_PYPI_PASSWORD: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
   LIBRARY_NAMESPACE: 'ansys.grantami.system'
 
 jobs:
@@ -85,8 +80,6 @@ jobs:
     strategy:
       matrix:
         server:
-          - name: "AZURE_VM_NAME_DEV"
-            url: "TEST_SERVER_DEV_URL"
           - name: "AZURE_VM_NAME_26R1"
             url: "TEST_SERVER_26R1_URL"
           - name: "AZURE_VM_NAME_25R2"
@@ -128,8 +121,6 @@ jobs:
           - "ubuntu-latest"
           - "windows-latest"
         server:
-          - url: "TEST_SERVER_DEV_URL"
-            version: "26.1"
           - url: "TEST_SERVER_26R1_URL"
             version: "26.1"
           - url: "TEST_SERVER_25R2_URL"
@@ -182,7 +173,7 @@ jobs:
       - name: "Run Ansys documentation building action"
         uses: ansys/actions/doc-build@1f4f0896a8e49d3aec2f02ced215b04a32c85f28  # v10.2.7
         env:
-          TEST_SL_URL: ${{secrets.TEST_SERVER_DEV_URL}}
+          TEST_SL_URL: ${{secrets.TEST_SERVER_26R1_URL}}
           TEST_USER: ${{secrets.TEST_SERVER_SYSADMIN_USER}}
           TEST_PASS: ${{secrets.TEST_SERVER_SYSADMIN_PASS}}
           BUILD_EXAMPLES: "true"
