@@ -104,7 +104,7 @@ jobs:
   build-wheelhouse:
     name: "Build wheelhouse for latest Python versions"
     runs-on: ${{ matrix.os }}
-#    needs: code-style
+    needs: code-style
     permissions:
       id-token: write
       attestations: write
@@ -158,15 +158,15 @@ jobs:
           path: .cov/html
           retention-days: 7
 
-#      - name: "Upload coverage to Codecov"
-#        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24  # v5.4.3
-#        if: ${{ matrix.python-version == env.MAIN_PYTHON_VERSION && matrix.os == 'ubuntu-latest' && !startsWith( github.event.pull_request.head.ref, 'dependabot/') }}
-#        env:
-#          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-#        with:
-#          files: .cov/xml
-#          flags: unittests
-#          fail_ci_if_error: true
+      - name: "Upload coverage to Codecov"
+        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24  # v5.4.3
+        if: ${{ matrix.python-version == env.MAIN_PYTHON_VERSION && matrix.os == 'ubuntu-latest' && !startsWith( github.event.pull_request.head.ref, 'dependabot/') }}
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          files: .cov/xml
+          flags: unittests
+          fail_ci_if_error: true
 
   build-library:
     name: "Build library"

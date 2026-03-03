@@ -63,8 +63,8 @@ on:
 
       PYANSYS_PYPI_PRIVATE_PAT:
         required: true
-#      CODECOV_TOKEN:
-#        required: true
+      CODECOV_TOKEN:
+        required: true
   workflow_dispatch:
 
 concurrency:
@@ -164,15 +164,15 @@ jobs:
           TEST_SYSADMIN_PASS: ${{secrets.TEST_SERVER_SYSADMIN_PASS}}
 
 
-#      - name: "Upload coverage to Codecov"
-#        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24  # v5.4.3
-#        if: ${{ matrix.os  == 'ubuntu-latest' }}
-#        env:
-#          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-#        with:
-#          files: .cov/xml
-#          flags: integration-${{ matrix.os }}-${{ matrix.server.version }}
-#          fail_ci_if_error: true
+      - name: "Upload coverage to Codecov"
+        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24  # v5.4.3
+        if: ${{ matrix.os  == 'ubuntu-latest' }}
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          files: .cov/xml
+          flags: integration-${{ matrix.os }}-${{ matrix.server.version }}
+          fail_ci_if_error: true
 
   doc-build:
     name: "Build documentation"
