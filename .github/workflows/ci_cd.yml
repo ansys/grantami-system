@@ -22,9 +22,6 @@ env:
   DOCUMENTATION_CNAME: 'system.grantami.docs.pyansys.com'
   LIBRARY_NAME: 'ansys-grantami-system'
   LIBRARY_NAMESPACE: 'ansys.grantami.system'
-  PIP_INDEX_URL: "https://${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/"
-  UV_INDEX_PYANSYS_PYPI_USERNAME: "PAT"
-  UV_INDEX_PYANSYS_PYPI_PASSWORD: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
