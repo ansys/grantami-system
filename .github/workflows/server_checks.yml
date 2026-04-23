@@ -208,6 +208,7 @@ jobs:
       matrix:
         server:
           - "AZURE_VM_NAME_DEV"
+          - "AZURE_VM_NAME_26R1"
           - "AZURE_VM_NAME_25R2"
           - "AZURE_VM_NAME_25R1"
           - "AZURE_VM_NAME_24R2"
