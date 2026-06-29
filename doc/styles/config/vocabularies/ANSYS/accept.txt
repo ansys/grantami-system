@@ -9,3 +9,4 @@ autologon
 System
 uv
 application
+synopsys
