@@ -106,7 +106,7 @@ jobs:
             az vm start -g ${{ secrets.AZURE_RESOURCE_GROUP }} -n ${{ secrets[matrix.server.name] }}
 
       - name: Install uv
-        uses: astral-sh/setup-uv@f98e06938123ccabd21905ea5d0069192241f9f1  # v8.3.1
+        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990  # v8.3.2
         with:
           python-version: ${{ inputs.python-version }}
 
@@ -142,7 +142,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
 
       - name: Install uv defined in pyproject.toml
-        uses: astral-sh/setup-uv@f98e06938123ccabd21905ea5d0069192241f9f1  # v8.3.1
+        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990  # v8.3.2
         with:
           version: ${{ env.UV_VERSION }}
           python-version: ${{ inputs.python-version }}
@@ -180,7 +180,7 @@ jobs:
     needs: integration-tests
     steps:
       - name: "Run Ansys documentation building action"
-        uses: ansys/actions/doc-build@a5b0351dc277d68c2dc1beca2d2674c7dfa4fc55  # v10.3.3
+        uses: ansys/actions/doc-build@7419880d64bb0bba83f968ca803611df0b76faf0  # v10.3.4
         env:
           TEST_SL_URL: ${{secrets.TEST_SERVER_DEV_URL}}
           TEST_USER: ${{secrets.TEST_SERVER_SYSADMIN_USER}}
