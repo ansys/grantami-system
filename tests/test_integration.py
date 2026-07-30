@@ -21,7 +21,7 @@ import pytest
 
 from ansys.grantami.system import ActivityItem, ActivityReportFilter, ActivityUsageMode
 
-pytestmark = pytest.mark.integration(mi_versions=[(26, 1)])
+pytestmark = pytest.mark.integration(mi_versions=[(27, 1), (26, 1)])
 
 
 def _validate_activity_log_item(item: ActivityItem, additional_checks: dict = None):
