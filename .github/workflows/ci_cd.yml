@@ -36,7 +36,7 @@ jobs:
     name: "Code style"
     runs-on: ubuntu-latest
     steps:
-      - uses: ansys/actions/code-style@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2  # v10.3.6
+      - uses: ansys/actions/code-style@d98e1a4008dab392f8c114a483c2c5624076ccd6  # v11.0.1
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           skip-install: false
@@ -49,7 +49,7 @@ jobs:
     name: "Documentation style"
     runs-on: ubuntu-latest
     steps:
-      - uses: ansys/actions/doc-style@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2  # v10.3.6
+      - uses: ansys/actions/doc-style@d98e1a4008dab392f8c114a483c2c5624076ccd6  # v11.0.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -85,7 +85,7 @@ jobs:
     needs: doc-build-debug
     steps:
     - name: "Run Ansys documentation building action"
-      uses: ansys/actions/doc-build@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2  # v10.3.6
+      uses: ansys/actions/doc-build@d98e1a4008dab392f8c114a483c2c5624076ccd6  # v11.0.1
       with:
         check-links: false
         dependencies: "pandoc"
@@ -114,7 +114,7 @@ jobs:
            os: [ubuntu-latest, windows-latest]
            python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
     steps:
-      - uses: ansys/actions/build-wheelhouse@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2  # v10.3.6
+      - uses: ansys/actions/build-wheelhouse@d98e1a4008dab392f8c114a483c2c5624076ccd6  # v11.0.1
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           operating-system: ${{ matrix.os }}
@@ -177,7 +177,7 @@ jobs:
       attestations: write
       contents: read
     steps:
-      - uses: ansys/actions/build-library@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2  # v10.3.6
+      - uses: ansys/actions/build-library@d98e1a4008dab392f8c114a483c2c5624076ccd6  # v11.0.1
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
@@ -208,7 +208,7 @@ jobs:
     needs: [server-checks]
     if: github.event_name == 'push' && !contains(github.ref, 'refs/tags')
     steps:
-      - uses: ansys/actions/doc-deploy-dev@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2  # v10.3.6
+      - uses: ansys/actions/doc-deploy-dev@d98e1a4008dab392f8c114a483c2c5624076ccd6  # v11.0.1
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -223,7 +223,7 @@ jobs:
     if: (github.event_name == 'workflow_dispatch') && (github.ref == 'refs/heads/main') && (inputs.publish-to-private-pypi == 'true')
     steps:
       - name: "Release to private PyPI"
-        uses: ansys/actions/release-pypi-private@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2  # v10.3.6
+        uses: ansys/actions/release-pypi-private@d98e1a4008dab392f8c114a483c2c5624076ccd6  # v11.0.1
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           twine-username: "__token__"
@@ -237,7 +237,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: ansys/actions/doc-deploy-changelog@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2  # v10.3.6
+      - uses: ansys/actions/doc-deploy-changelog@d98e1a4008dab392f8c114a483c2c5624076ccd6  # v11.0.1
         with:
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
           bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
@@ -267,7 +267,7 @@ jobs:
           packages-dir: ${{ env.LIBRARY_NAME }}-artifacts
           skip-existing: false
 
-      - uses: ansys/actions/release-github@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2  # v10.3.6
+      - uses: ansys/actions/release-github@d98e1a4008dab392f8c114a483c2c5624076ccd6  # v11.0.1
         name: "Release to GitHub"
         with:
           library-name: ${{ env.LIBRARY_NAME }}
@@ -279,7 +279,7 @@ jobs:
     needs: release
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
     steps:
-      - uses: ansys/actions/doc-deploy-stable@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2  # v10.3.6
+      - uses: ansys/actions/doc-deploy-stable@d98e1a4008dab392f8c114a483c2c5624076ccd6  # v11.0.1
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
