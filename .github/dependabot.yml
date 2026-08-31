@@ -35,6 +35,9 @@ updates:
         - "jupytext"
         - "ipykernel"
         - "enum-tools"
+        - "kaleido"
+        - "choreographer"
+        - "ipython"
       dev-deps:
         patterns:
         - "pytest*"
