@@ -43,7 +43,7 @@ classifiers = [
 
 requires-python = ">=3.12"
 dependencies = [
-    "ansys-grantami-serverapi-openapi==5.1.0",
+    "ansys-grantami-serverapi-openapi==6.0.0.dev1349",
     "requests~=2.26",
     "ansys-openapi-common~=2.0",
 ]
@@ -54,6 +54,9 @@ examples = [
   "jupyterlab>=3,<5",
   "plotly>=6,<8",
 ]
+
+[tool.uv.sources]
+ansys-grantami-serverapi-openapi = { index = "pyansys-pypi"}
 
 [[tool.uv.index]]
 name = "pyansys-pypi"
