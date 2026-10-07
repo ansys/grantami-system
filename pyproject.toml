@@ -16,7 +16,7 @@ system-certs = true
 [project]
 name = "ansys-grantami-system"
 description = "Control Granta MI system administration functions from Python"
-version = "1.1.0.dev0"
+version = "1.1.0rc0"
 license = "Apache-2.0"
 authors = [{ name = "Synopsys, Inc. and ANSYS, Inc.", email = "pyansys-core@synopsys.com" }]
 maintainers = [{ name = "Synopsys, Inc. and ANSYS, Inc.", email = "pyansys-core@synopsys.com" }]
