@@ -53,7 +53,7 @@ wheels = [
 
 [[package]]
 name = "ansys-grantami-system"
-version = "1.1.0.dev0"
+version = "1.2.0.dev0"
 source = { editable = "." }
 dependencies = [
     { name = "ansys-grantami-serverapi-openapi" },
