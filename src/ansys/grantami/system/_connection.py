@@ -238,10 +238,13 @@ class Connection(ApiClientFactory):
         from . import __version__
 
         auth_url = servicelayer_url.strip("/") + AUTH_PATH
+        if session_configuration is None:
+            session_configuration = SessionConfiguration()
+        # Headers must be set before calling super().__init__, which copies them to the underlying requests session.
+        session_configuration.headers["X-Granta-ApplicationName"] = GRANTA_APPLICATION_NAME_HEADER
+        session_configuration.headers["User-Agent"] = generate_user_agent("ansys-grantami-system", __version__)
         super().__init__(auth_url, session_configuration)
         self._base_service_layer_url = servicelayer_url
-        self._session_configuration.headers["X-Granta-ApplicationName"] = GRANTA_APPLICATION_NAME_HEADER
-        self._session_configuration.headers["User-Agent"] = generate_user_agent("ansys-grantami-system", __version__)
 
     def connect(self) -> SystemApiClient:
         """

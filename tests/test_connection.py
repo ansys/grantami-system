@@ -23,6 +23,7 @@ import requests_mock
 from ansys.grantami.system import Connection, SystemApiClient
 from ansys.grantami.system._connection import (
     AUTH_PATH,
+    GRANTA_APPLICATION_NAME_HEADER,
     PROXY_PATH,
 )
 
@@ -37,6 +38,12 @@ def successful_auth(mocker, sl_url):
     with mocker:
         mocker.get(sl_url)
         mocker.get(sl_url + AUTH_PATH)
+
+
+def test_session_headers(sl_url):
+    headers = Connection(sl_url)._session.headers
+    assert headers["X-Granta-ApplicationName"] == GRANTA_APPLICATION_NAME_HEADER
+    assert headers["User-Agent"].startswith("ansys-grantami-system/")
 
 
 def test_missing_api_definition_raises_informative_error(sl_url, successful_auth, mocker):
