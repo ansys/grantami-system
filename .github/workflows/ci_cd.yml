@@ -176,7 +176,7 @@ jobs:
         run: >
           uv run --frozen pytest
           -m "not integration"
-          --cov=${{ env.LIBRARY_NAMESPACE }}
+          --cov=${LIBRARY_NAMESPACE}
           --cov-report=term
           --cov-report=xml:.cov/xml
           --cov-report=html:.cov/html

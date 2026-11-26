@@ -131,7 +131,7 @@ jobs:
         run: |
           uv run ./.github/scripts/check_server.py
         env:
-          TEST_SL_URL: ${{ secrets[matrix.server.url] }}
+          TEST_SL_URL: ${{ secrets[matrix.server.url] }}  # zizmor: ignore[overprovisioned-secrets,obfuscation] - No support in matrix for variable interpolation
           TEST_USER: ${{secrets.TEST_SERVER_READ_USER}}
           TEST_PASS: ${{secrets.TEST_SERVER_READ_PASS}}
 
@@ -178,12 +178,12 @@ jobs:
           pytest ./tests
           -m integration
           --mi-version ${TEST_MI_VERSION}
-          --cov=${{ env.LIBRARY_NAMESPACE }}
+          --cov=${LIBRARY_NAMESPACE}
           --cov-report=term
           --cov-report=xml:.cov/xml
           --cov-report=html:.cov/html
         env:
-          TEST_SL_URL: ${{ secrets[matrix.server.url] }}
+          TEST_SL_URL: ${{ secrets[matrix.server.url] }}  # zizmor: ignore[overprovisioned-secrets,obfuscation] - No support in matrix for variable interpolation
           TEST_SYSADMIN_USER: ${{secrets.TEST_SERVER_SYSADMIN_USER}}
           TEST_SYSADMIN_PASS: ${{secrets.TEST_SERVER_SYSADMIN_PASS}}
           TEST_MI_VERSION: ${{ matrix.server.version }}
