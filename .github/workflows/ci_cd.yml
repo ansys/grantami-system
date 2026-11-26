@@ -16,6 +16,9 @@ on:
           - 'false'
         default: 'false'
 
+permissions:
+  contents: read
+
 env:
   MAIN_PYTHON_VERSION: '3.12'
   UV_VERSION: '0.7.19'
@@ -83,6 +86,8 @@ jobs:
     steps:
       - name: "Checkout the repository"
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Install uv defined in pyproject.toml
         uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2  # v10.3.3
@@ -157,6 +162,8 @@ jobs:
     steps:
       - name: "Checkout the repository"
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Install uv defined in pyproject.toml
         uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2  # v10.3.3
@@ -215,7 +222,26 @@ jobs:
     with:
       skip-vm-management: ${{ vars.SKIP_VM_MANAGEMENT == 'true' }}
     secrets:
-      inherit
+      AZURE_APP_ID: ${{ secrets.AZURE_APP_ID }}
+      AZURE_SECRET: ${{ secrets.AZURE_SECRET }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+      AZURE_VM_NAME_DEV: ${{ secrets.AZURE_VM_NAME_DEV }}
+      AZURE_VM_NAME_27R1: ${{ secrets.AZURE_VM_NAME_27R1 }}
+      AZURE_VM_NAME_26R1: ${{ secrets.AZURE_VM_NAME_26R1 }}
+      AZURE_VM_NAME_25R2: ${{ secrets.AZURE_VM_NAME_25R2 }}
+      AZURE_VM_NAME_25R1: ${{ secrets.AZURE_VM_NAME_25R1 }}
+      AZURE_VM_NAME_24R2: ${{ secrets.AZURE_VM_NAME_24R2 }}
+      TEST_SERVER_DEV_URL: ${{ secrets.TEST_SERVER_DEV_URL }}
+      TEST_SERVER_27R1_URL: ${{ secrets.TEST_SERVER_27R1_URL }}
+      TEST_SERVER_26R1_URL: ${{ secrets.TEST_SERVER_26R1_URL }}
+      TEST_SERVER_25R2_URL: ${{ secrets.TEST_SERVER_25R2_URL }}
+      TEST_SERVER_READ_USER: ${{ secrets.TEST_SERVER_READ_USER }}
+      TEST_SERVER_READ_PASS: ${{ secrets.TEST_SERVER_READ_PASS }}
+      TEST_SERVER_SYSADMIN_USER: ${{ secrets.TEST_SERVER_SYSADMIN_USER }}
+      TEST_SERVER_SYSADMIN_PASS: ${{ secrets.TEST_SERVER_SYSADMIN_PASS }}
+      PYANSYS_PYPI_PRIVATE_PAT: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   integration-checks-complete:
     name: "Integration checks complete"
@@ -231,6 +257,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [integration-checks-complete]
     if: github.event_name == 'push' && !contains(github.ref, 'refs/tags')
+    permissions:
+      contents: write
     steps:
       - uses: ansys/actions/doc-deploy-dev@f5e1481b9c128197a30d1dc1dfc52b8cd6865555  # v11.1.5
         with:
@@ -303,6 +331,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: release
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+    permissions:
+      contents: write
     steps:
       - uses: ansys/actions/doc-deploy-stable@f5e1481b9c128197a30d1dc1dfc52b8cd6865555  # v11.1.5
         with:

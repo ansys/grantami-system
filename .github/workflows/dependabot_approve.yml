@@ -11,6 +11,7 @@ jobs:
   dependabot:
     name: Auto-approve Dependabot PRs
     permissions:
+      contents: read
       pull-requests: write  # to approve PRs
     runs-on: ubuntu-latest
     # Checking the author will prevent your Action run failing on non-Dependabot PRs
