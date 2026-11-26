@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      issues: write
+      issues: write  # to create, apply, and remove repository labels
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
@@ -35,7 +35,7 @@ jobs:
     needs: [label-syncer]
     permissions:
       contents: read
-      pull-requests: write
+      pull-requests: write   # to allow the Action to add labels to PRs
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
@@ -49,7 +49,7 @@ jobs:
     name: "Recommend labelling manually"
     runs-on: ubuntu-latest
     permissions:
-      issues: write
+      issues: write  # to allow the Action to add comments to PRs
     steps:
     - name: Suggest to add labels
       uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
@@ -68,8 +68,8 @@ jobs:
       name: "Create changelog fragment"
       needs: [labeler]
       permissions:
-        contents: write
-        pull-requests: write
+        contents: write  # to allow the Action to push to the PR branch
+        pull-requests: write  # to allow the Action to update the target PR
       runs-on: ubuntu-latest
       if: ${{ !startsWith( github.event.pull_request.head.ref, 'dependabot/') && !(startsWith(github.event.pull_request.head.ref, 'pre-commit-ci-update-config')) }}
       steps:
